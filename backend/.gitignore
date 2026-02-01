@@ -1,0 +1,10 @@
+# Ignore dependencies and environment files
+node_modules
+# Environment variables
+.env
+# Ignore Prisma generated files
+/generated/prisma
+# Ignore dev database file
+channel_ss_dev.db
+#undefined
+undefined

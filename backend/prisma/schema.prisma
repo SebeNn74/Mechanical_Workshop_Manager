@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Client {
+  id             Int          @id @default(autoincrement())
+  documentType   DocumentType
+  documentNumber String
+  name           String
+  phone          String
+  address        String?
+  createdAt      DateTime     @default(now())
+  vehicles       Vehicle[]
+
+  @@unique([documentType, documentNumber])
+}
+
+model Vehicle {
+  id         Int         @id @default(autoincrement())
+  plateType  PlateType
+  plate      String      @unique
+  brand      String
+  model      String
+  mileage    Int
+  createdAt  DateTime    @default(now())
+  client     Client      @relation(fields: [clientId], references: [id])
+  clientId   Int
+  receptions Reception[]
+}
+
+model Reception {
+  id        Int             @id @default(autoincrement())
+  dateTime  DateTime        @default(now())
+  notes     String?
+  vehicle   Vehicle         @relation(fields: [vehicleId], references: [id])
+  vehicleId Int
+  budget    Budget?
+  checklist ChecklistItem[]
+  repairs   Repair[]
+}
+
+model Budget {
+  id          Int          @id @default(autoincrement())
+  status      BudgetStatus
+  total       Int
+  createdAt   DateTime     @default(now())
+  reception   Reception    @relation(fields: [receptionId], references: [id])
+  receptionId Int          @unique
+}
+
+model ChecklistItem {
+  id          Int        @id @default(autoincrement())
+  block       String
+  item        String
+  status      ItemStatus
+  description String?
+  reception   Reception  @relation(fields: [receptionId], references: [id])
+  receptionId Int
+  photos      Photo[]
+}
+
+model Repair {
+  id          Int          @id @default(autoincrement())
+  startDate   DateTime
+  endDate     DateTime
+  description String
+  mileage     Int
+  reception   Reception    @relation(fields: [receptionId], references: [id])
+  receptionId Int
+  tasks       RepairTask[]
+}
+
+model RepairTask {
+  id          Int     @id @default(autoincrement())
+  description String?
+  price       Int
+  repair      Repair  @relation(fields: [repairId], references: [id])
+  repairId    Int
+}
+
+model Photo {
+  id              Int            @id @default(autoincrement())
+  path            String
+  checklistItem   ChecklistItem? @relation(fields: [checklistItemId], references: [id])
+  checklistItemId Int
+}
+
+enum DocumentType {
+  CC
+  NIT
+}
+
+enum PlateType {
+  PRIVATE
+  PUBLIC
+  MOTORCYCLE
+  OTHER
+}
+
+enum BudgetStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ItemStatus {
+  GOOD
+  BAD
+  NOT_CHECKED
+}

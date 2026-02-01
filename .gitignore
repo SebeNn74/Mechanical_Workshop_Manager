@@ -1,0 +1,32 @@
+# Compiled files 
+build/
+
+# Dependency directories
+node_modules/
+
+# dotenv enviroment variable files
+.env
+!.env.example
+
+# TypeScript cache
+*.tsbuildinfo
+
+# npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Output of 'npm pack'
+*.tgz
+
+# vitepress build output
+**/.vitepress/dist
+
+# vitepress cache directory
+**/.vitepress/cache
+
+# Vite files
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+.vite/
