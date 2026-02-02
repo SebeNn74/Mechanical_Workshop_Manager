@@ -43,7 +43,7 @@ CREATE TABLE "Budget" (
 -- CreateTable
 CREATE TABLE "BudgetItem" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "description" TEXT,
+    "description" TEXT NOT NULL,
     "estimatedPrice" INTEGER NOT NULL,
     "budgetId" INTEGER NOT NULL,
     CONSTRAINT "BudgetItem_budgetId_fkey" FOREIGN KEY ("budgetId") REFERENCES "Budget" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
