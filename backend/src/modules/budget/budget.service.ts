@@ -11,6 +11,7 @@ import {
 import { IBudgetRepository } from './budget.repository.js';
 import { NotFoundError } from '#/shared/errors/domain.error.js';
 import { IReceptionService } from '../reception/reception.service.js';
+import { IBudgetItemService } from './budget_item/budget_item.service.js';
 
 export interface IBudgetService {
     add(budget: CreateBudgetInput): Promise<BudgetResponse>;
@@ -25,6 +26,7 @@ export class BudgetService implements IBudgetService {
     constructor(
         private readonly budgetRepo: IBudgetRepository,
         private readonly receptionService: IReceptionService,
+        private readonly budgetItemService: IBudgetItemService,
     ) {}
 
     async add(budget: CreateBudgetInput): Promise<BudgetResponse> {
@@ -51,7 +53,7 @@ export class BudgetService implements IBudgetService {
     async update(id: number, data: UpdateBudgetInput): Promise<BudgetResponse> {
         // 1. Verificar id
         await this.getBudgetOrFail(id);
-        // 2. Actualizar Budgete
+        // 2. Actualizar Budget
         const updated = await this.budgetRepo.update(id, data);
         return budgetToResponseDTO(updated);
     }
