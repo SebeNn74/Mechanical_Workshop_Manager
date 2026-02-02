@@ -7,7 +7,12 @@ export const ReceptionSchema = z
     .object({
         id: z.number().int().positive(),
         vehicleId: z.number().int().positive(),
+        receptionNumber: z
+            .string()
+            .min(6, '* receptionNumber debe tener al menos 3 caracteres')
+            .max(20, '* receptionNumber no debe exceder los 20 caracteres'),
         dateTime: z.coerce.date(),
+        mileageAtEntry: z.number().int().positive(),
         notes: z
             .string()
             .min(3, '* note debe tener al menos 3 caracteres')
@@ -37,6 +42,7 @@ export const ReceptionResponseDTO = ReceptionSchema.strict();
 export const ReceptionFiltersDTO = z
     .object({
         vehicleId: z.coerce.number().int().positive().optional(),
+        receptionNumber: z.coerce.string().optional(),
         dateTime: z.coerce.date().optional(),
     })
     .strict();

@@ -7,13 +7,17 @@ export const RepairSchema = z
     .object({
         id: z.number().int().positive(),
         receptionId: z.number().int().positive(),
-        startDate: z.coerce.date(),
-        endDate: z.coerce.date(),
-        description: z
+        repairNumber: z
             .string()
-            .min(3, '* description debe tener al menos 3 caracteres')
-            .max(200, '* description no debe exceder los 200 caracteres'),
-        mileage: z.number().int().positive(),
+            .min(6, '* repairNumber debe tener al menos 3 caracteres')
+            .max(20, '* repairNumber no debe exceder los 20 caracteres'),
+        startDate: z.coerce.date(),
+        endDate: z.coerce.date().nullable(),
+        notes: z
+            .string()
+            .min(3, '* notes debe tener al menos 3 caracteres')
+            .max(200, '* notes no debe exceder los 200 caracteres')
+            .nullable(),
     })
     .strict();
 

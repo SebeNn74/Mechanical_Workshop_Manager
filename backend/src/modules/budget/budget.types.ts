@@ -9,16 +9,22 @@ export const BudgetSchema = z
     .object({
         id: z.number().int().positive(),
         receptionId: z.number().int().positive(),
+        budgetNumber: z
+            .string()
+            .min(6, '* budgetNumber debe tener al menos 3 caracteres')
+            .max(20, '* budgetNumber no debe exceder los 20 caracteres'),
         status: BudgetStatus,
         createdAt: z.coerce.date(),
+        approvedAt: z.coerce.date().nullable(),
     })
     .strict();
 
 // DTOs
 //* -----------------------------
 // Create
-export const CreateBudgetDTO = BudgetSchema.pick({
-    receptionId: true,
+export const CreateBudgetDTO = BudgetSchema.omit({
+    id: true,
+    createdAt: true,
 }).strict();
 
 // Update
@@ -36,7 +42,7 @@ export const BudgetResponseDTO = BudgetSchema.strict();
 export const BudgetFiltersDTO = z
     .object({
         receptionId: z.coerce.number().int().positive().optional(),
-        status: BudgetStatus.optional(),
+        budgetNumber: z.coerce.string().optional(),
         createdAt: z.coerce.date().optional(),
     })
     .strict();

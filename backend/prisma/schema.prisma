@@ -7,19 +7,26 @@ datasource db {
   provider = "sqlite"
 }
 
+//* CLIENTES
+// ============================================
 model Client {
   id             Int          @id @default(autoincrement())
   documentType   DocumentType @default(CC)
   documentNumber String
   name           String
   phone          String
+  email          String?
   address        String?
   createdAt      DateTime     @default(now())
   vehicles       Vehicle[]
 
   @@unique([documentType, documentNumber])
+  @@index([documentNumber])
+  @@index([name])
 }
 
+//* VEHÍCULOS
+// ============================================
 model Vehicle {
   id         Int         @id @default(autoincrement())
   plateType  PlateType   @default(PRIVATE)
@@ -31,34 +38,48 @@ model Vehicle {
   client     Client      @relation(fields: [clientId], references: [id])
   clientId   Int
   receptions Reception[]
+
+  @@index([clientId])
+  @@index([plate])
 }
 
+//* PLANTILLAS DE CHECKLIST
+// ============================================
+model ChecklistTemplate {
+  id          Int                     @id @default(autoincrement())
+  name        String
+  description String?
+  vehicleType PlateType?
+  items       ChecklistTemplateItem[]
+}
+
+model ChecklistTemplateItem {
+  id         Int               @id @default(autoincrement())
+  block      String
+  item       String
+  template   ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  templateId Int
+
+  @@index([templateId])
+}
+
+//* RECEPCIONES
+// ============================================
 model Reception {
-  id        Int             @id @default(autoincrement())
-  dateTime  DateTime        @default(now())
-  notes     String?
-  vehicle   Vehicle         @relation(fields: [vehicleId], references: [id])
-  vehicleId Int
-  budget    Budget?
-  checklist ChecklistItem[]
-  repairs   Repair[]
-}
+  id              Int             @id @default(autoincrement())
+  receptionNumber String          @unique
+  dateTime        DateTime        @default(now())
+  mileageAtEntry  Int
+  notes           String?
+  vehicle         Vehicle         @relation(fields: [vehicleId], references: [id])
+  vehicleId       Int
+  budget          Budget?
+  checklist       ChecklistItem[]
+  repair          Repair?
 
-model Budget {
-  id          Int          @id @default(autoincrement())
-  status      BudgetStatus @default(PENDING)
-  createdAt   DateTime     @default(now())
-  reception   Reception    @relation(fields: [receptionId], references: [id])
-  receptionId Int          @unique
-  items       BudgetItem[]
-}
-
-model BudgetItem {
-  id             Int     @id @default(autoincrement())
-  description    String
-  estimatedPrice Int
-  budget         Budget  @relation(fields: [budgetId], references: [id])
-  budgetId       Int
+  @@index([vehicleId])
+  @@index([receptionNumber])
+  @@index([dateTime])
 }
 
 model ChecklistItem {
@@ -66,38 +87,80 @@ model ChecklistItem {
   block       String
   item        String
   status      ItemStatus @default(NOT_CHECKED)
-  description String?
+  notes       String?
   reception   Reception  @relation(fields: [receptionId], references: [id])
   receptionId Int
   photos      Photo[]
-}
 
-model Repair {
-  id          Int          @id @default(autoincrement())
-  startDate   DateTime
-  endDate     DateTime
-  description String
-  mileage     Int
-  reception   Reception    @relation(fields: [receptionId], references: [id])
-  receptionId Int
-  tasks       RepairTask[]
-}
-
-model RepairTask {
-  id          Int     @id @default(autoincrement())
-  description String?
-  finalPrice  Int
-  repair      Repair  @relation(fields: [repairId], references: [id])
-  repairId    Int
+  @@index([receptionId])
 }
 
 model Photo {
   id              Int           @id @default(autoincrement())
+  filename        String
   path            String
   checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id])
   checklistItemId Int
+
+  @@index([checklistItemId])
 }
 
+//* PRESUPUESTOS
+// ============================================
+model Budget {
+  id           Int          @id @default(autoincrement())
+  budgetNumber String       @unique
+  status       BudgetStatus @default(PENDING)
+  createdAt    DateTime     @default(now())
+  approvedAt   DateTime?
+  reception    Reception    @relation(fields: [receptionId], references: [id])
+  receptionId  Int          @unique
+  items        BudgetItem[]
+
+  @@index([budgetNumber])
+  @@index([status])
+}
+
+model BudgetItem {
+  id             Int         @id @default(autoincrement())
+  description    String
+  estimatedPrice Int
+  budget         Budget      @relation(fields: [budgetId], references: [id])
+  budgetId       Int
+  repairTasks    RepairTask?
+
+  @@index([budgetId])
+}
+
+//* REPARACIONES
+// ============================================
+model Repair {
+  id           Int          @id @default(autoincrement())
+  repairNumber String       @unique
+  startDate    DateTime     @default(now())
+  endDate      DateTime?
+  notes        String?
+  reception    Reception    @relation(fields: [receptionId], references: [id])
+  receptionId  Int          @unique
+  tasks        RepairTask[]
+
+  @@index([repairNumber])
+}
+
+model RepairTask {
+  id           Int        @id @default(autoincrement())
+  description  String?
+  finalPrice   Int
+  repair       Repair     @relation(fields: [repairId], references: [id])
+  repairId     Int
+  budgetItem   BudgetItem @relation(fields: [budgetItemId], references: [id])
+  budgetItemId Int        @unique
+
+  @@index([repairId])
+}
+
+//* ENUMS
+// ============================================
 enum DocumentType {
   CC
   NIT
@@ -118,6 +181,7 @@ enum BudgetStatus {
 
 enum ItemStatus {
   GOOD
+  REGULAR
   BAD
   NOT_CHECKED
 }

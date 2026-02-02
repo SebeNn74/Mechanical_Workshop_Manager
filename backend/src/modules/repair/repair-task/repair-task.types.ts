@@ -7,6 +7,7 @@ export const RepairTaskSchema = z
     .object({
         id: z.number().int().positive(),
         repairId: z.number().int().positive(),
+        budgetItemId: z.number().int().positive(),
         description: z
             .string()
             .min(3, '* description debe tener al menos 3 caracteres')
