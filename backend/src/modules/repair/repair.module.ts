@@ -2,17 +2,17 @@ import { RepairRepository } from './repair.repository.js';
 import { RepairService } from './repair.service.js';
 import { RepairController } from './repair.controller.js';
 import { receptionService } from '../reception/index.js';
-// import { RepairItemService } from './repair_task/repair_item.service.js';
-// import { RepairItemRepository } from './repair_task/repair_item.repository.js';
+import { RepairTaskService } from './repair-task/repair-task.service.js';
+import { RepairTaskRepository } from './repair-task/repair-task.repository.js';
 
-// const repairItemRepo = new RepairItemRepository();
+const repairTaskRepo = new RepairTaskRepository();
 const repairRepository = new RepairRepository();
 
-// const repairItemService = new RepairItemService(repairItemRepo);
+const repairTaskService = new RepairTaskService(repairTaskRepo);
 const repairService = new RepairService(
     repairRepository,
     receptionService,
-    // repairItemService,
+    repairTaskService,
 );
 
 const repairController = new RepairController(repairService);

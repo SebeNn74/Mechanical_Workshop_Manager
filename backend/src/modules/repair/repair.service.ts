@@ -11,7 +11,7 @@ import {
 import { IRepairRepository } from './repair.repository.js';
 import { NotFoundError } from '#/shared/errors/domain.error.js';
 import { IReceptionService } from '../reception/reception.service.js';
-// import { IRepairTaskService } from './repair_task/repair_task.service.js';
+import { IRepairTaskService } from './repair-task/repair-task.service.js';
 
 export interface IRepairService {
     add(Repair: CreateRepairInput): Promise<RepairResponse>;
@@ -26,7 +26,7 @@ export class RepairService implements IRepairService {
     constructor(
         private readonly repairRepo: IRepairRepository,
         private readonly receptionService: IReceptionService,
-        // private readonly repairTaskService: IRepairTaskService,
+        private readonly repairTaskService: IRepairTaskService,
     ) {}
 
     async add(repair: CreateRepairInput): Promise<RepairResponse> {
