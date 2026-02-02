@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "Client" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "documentType" TEXT NOT NULL,
+    "documentType" TEXT NOT NULL DEFAULT 'CC',
     "documentNumber" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE "Client" (
 -- CreateTable
 CREATE TABLE "Vehicle" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "plateType" TEXT NOT NULL,
+    "plateType" TEXT NOT NULL DEFAULT 'PRIVATE',
     "plate" TEXT NOT NULL,
     "brand" TEXT NOT NULL,
     "model" TEXT NOT NULL,
@@ -27,18 +27,26 @@ CREATE TABLE "Reception" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "dateTime" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "notes" TEXT,
-    "vehiclesId" INTEGER NOT NULL,
-    CONSTRAINT "Reception_vehiclesId_fkey" FOREIGN KEY ("vehiclesId") REFERENCES "Vehicle" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    "vehicleId" INTEGER NOT NULL,
+    CONSTRAINT "Reception_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "Vehicle" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Budget" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "status" TEXT NOT NULL,
-    "total" INTEGER NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'PENDING',
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "receptionId" INTEGER NOT NULL,
     CONSTRAINT "Budget_receptionId_fkey" FOREIGN KEY ("receptionId") REFERENCES "Reception" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "BudgetItem" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "description" TEXT,
+    "estimatedPrice" INTEGER NOT NULL,
+    "budgetId" INTEGER NOT NULL,
+    CONSTRAINT "BudgetItem_budgetId_fkey" FOREIGN KEY ("budgetId") REFERENCES "Budget" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -46,7 +54,7 @@ CREATE TABLE "ChecklistItem" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "block" TEXT NOT NULL,
     "item" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'NOT_CHECKED',
     "description" TEXT,
     "receptionId" INTEGER NOT NULL,
     CONSTRAINT "ChecklistItem_receptionId_fkey" FOREIGN KEY ("receptionId") REFERENCES "Reception" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -67,7 +75,7 @@ CREATE TABLE "Repair" (
 CREATE TABLE "RepairTask" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "description" TEXT,
-    "price" INTEGER NOT NULL,
+    "finalPrice" INTEGER NOT NULL,
     "repairId" INTEGER NOT NULL,
     CONSTRAINT "RepairTask_repairId_fkey" FOREIGN KEY ("repairId") REFERENCES "Repair" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

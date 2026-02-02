@@ -51,9 +51,14 @@ export function handleErrorMiddleware(
                     meta: error.meta,
                 });
             default:
-                return send(res, 500, 'Error en la base de datos:'+ error.code, {
-                    meta: error.meta,
-                });
+                return send(
+                    res,
+                    500,
+                    'Error en la base de datos:' + error.code,
+                    {
+                        meta: error.meta,
+                    },
+                );
         }
     }
 

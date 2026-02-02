@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { IReceptionService } from './reception.service.js';
-import { CreateReceptionInput, UpdateReceptionInput } from './reception.types.js';
+import {
+    CreateReceptionInput,
+    UpdateReceptionInput,
+} from './reception.types.js';
 
 export class ReceptionController {
     constructor(private readonly receptionService: IReceptionService) {}
@@ -18,8 +21,8 @@ export class ReceptionController {
     getById = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = (req as any).validatedParams;
-            const Reception = await this.receptionService.getById(id);
-            return res.json(Reception);
+            const reception = await this.receptionService.getById(id);
+            return res.json(reception);
         } catch (error) {
             next(error);
         }
@@ -28,8 +31,8 @@ export class ReceptionController {
     getAll = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const filters = (req as any).validatedQuery;
-            const Receptions = await this.receptionService.getAll(filters);
-            return res.json(Receptions);
+            const receptions = await this.receptionService.getAll(filters);
+            return res.json(receptions);
         } catch (error) {
             next(error);
         }
@@ -39,8 +42,11 @@ export class ReceptionController {
         try {
             const { id } = (req as any).validatedParams;
             const data = (req as any).validatedBody as UpdateReceptionInput;
-            const ReceptionUpdated = await this.receptionService.update(id, data);
-            return res.json(ReceptionUpdated);
+            const receptionUpdated = await this.receptionService.update(
+                id,
+                data,
+            );
+            return res.json(receptionUpdated);
         } catch (error) {
             next(error);
         }

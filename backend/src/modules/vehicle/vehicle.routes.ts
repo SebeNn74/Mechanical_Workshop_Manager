@@ -19,7 +19,7 @@ vehicleRouter.post(
     '/check-duplicates',
     validateDTO(DuplicateVehicleCheckDTO),
     validateDTO(VehicleFiltersDTO, 'query'),
-    vehicleController.getDuplicates
+    vehicleController.getDuplicates,
 );
 
 vehicleRouter.get(

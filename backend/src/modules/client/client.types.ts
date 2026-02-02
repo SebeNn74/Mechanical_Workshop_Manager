@@ -19,14 +19,8 @@ export const ClientSchema = z
             .max(100, '* name no debe exceder los 30 caracteres'),
         phone: z
             .string()
-            .regex(
-                /^\d{10}$/,
-                '* phone debe contener solo dígitos',
-            )
-            .length(
-                10,
-                '* phone debe tener exactamente 10 dígitos',
-            ),
+            .regex(/^\d{10}$/, '* phone debe contener solo dígitos')
+            .length(10, '* phone debe tener exactamente 10 dígitos'),
         address: z
             .string()
             .min(5, '* address debe tener al menos 5 caracteres')

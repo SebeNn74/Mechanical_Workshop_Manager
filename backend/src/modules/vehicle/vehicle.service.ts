@@ -14,7 +14,7 @@ import { NotFoundError } from '#/shared/errors/domain.error.js';
 import { IClientService } from '../client/client.service.js';
 
 export interface IVehicleService {
-    add(Vehicle: CreateVehicleInput): Promise<VehicleResponse>;
+    add(vehicle: CreateVehicleInput): Promise<VehicleResponse>;
     existsById(id: number): Promise<boolean>;
     getById(id: number): Promise<VehicleResponse>;
     getDuplicates(data: DuplicateVehicleCheck): Promise<Vehicle[]>;
@@ -26,8 +26,8 @@ export interface IVehicleService {
 export class VehicleService implements IVehicleService {
     constructor(
         private readonly vehicleRepo: IVehicleRepository,
-        private readonly clientService: IClientService
-    ) { }
+        private readonly clientService: IClientService,
+    ) {}
 
     async add(vehicle: CreateVehicleInput): Promise<VehicleResponse> {
         //* La validación de duplicados se realiza por aparte con getDuplicates
@@ -55,7 +55,10 @@ export class VehicleService implements IVehicleService {
         return vehiclesToArrayResDTO(await this.vehicleRepo.findAll(filters));
     }
 
-    async update(id: number, data: UpdateVehicleInput): Promise<VehicleResponse> {
+    async update(
+        id: number,
+        data: UpdateVehicleInput,
+    ): Promise<VehicleResponse> {
         // 1. Verificar id
         await this.getVehicleOrFail(id);
         // 2. Actualizar Vehiclee
@@ -86,5 +89,4 @@ export class VehicleService implements IVehicleService {
             );
         }
     }
-
 }

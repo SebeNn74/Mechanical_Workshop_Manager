@@ -51,10 +51,14 @@ export type ReceptionFilters = z.infer<typeof ReceptionFiltersDTO>;
 
 // Reception To DTOs
 //* -----------------------------
-export const receptionToResponseDTO = (reception: Reception): ReceptionResponse => {
+export const receptionToResponseDTO = (
+    reception: Reception,
+): ReceptionResponse => {
     return ReceptionResponseDTO.parse(reception);
 };
 
-export const receptionsToArrayResDTO = (receptions: Reception[]): ReceptionResponse[] => {
+export const receptionsToArrayResDTO = (
+    receptions: Reception[],
+): ReceptionResponse[] => {
     return receptions.map(receptionToResponseDTO);
 };

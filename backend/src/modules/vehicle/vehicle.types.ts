@@ -2,12 +2,7 @@ import { z } from 'zod';
 
 // Vehicle Base Schemas
 //* -----------------------------
-export const PlateType = z.enum([
-    'PRIVATE',
-    'PUBLIC',
-    'MOTORCYCLE',
-    'OTHER'
-]);
+export const PlateType = z.enum(['PRIVATE', 'PUBLIC', 'MOTORCYCLE', 'OTHER']);
 
 // Base
 export const VehicleSchema = z
@@ -81,6 +76,8 @@ export const vehicleToResponseDTO = (vehicle: Vehicle): VehicleResponse => {
     return VehicleResponseDTO.parse(vehicle);
 };
 
-export const vehiclesToArrayResDTO = (vehicles: Vehicle[]): VehicleResponse[] => {
+export const vehiclesToArrayResDTO = (
+    vehicles: Vehicle[],
+): VehicleResponse[] => {
     return vehicles.map(vehicleToResponseDTO);
 };

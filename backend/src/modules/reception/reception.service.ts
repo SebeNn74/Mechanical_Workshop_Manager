@@ -13,7 +13,7 @@ import { NotFoundError } from '#/shared/errors/domain.error.js';
 import { IVehicleService } from '../vehicle/vehicle.service.js';
 
 export interface IReceptionService {
-    add(Reception: CreateReceptionInput): Promise<ReceptionResponse>;
+    add(reception: CreateReceptionInput): Promise<ReceptionResponse>;
     existsById(id: number): Promise<boolean>;
     getById(id: number): Promise<ReceptionResponse>;
     getAll(filters: ReceptionFilters): Promise<ReceptionResponse[]>;
@@ -24,8 +24,8 @@ export interface IReceptionService {
 export class ReceptionService implements IReceptionService {
     constructor(
         private readonly receptionRepo: IReceptionRepository,
-        private readonly vehicleService: IVehicleService
-    ) { }
+        private readonly vehicleService: IVehicleService,
+    ) {}
 
     async add(reception: CreateReceptionInput): Promise<ReceptionResponse> {
         // 1. Validar existencia de vehicle
@@ -45,10 +45,15 @@ export class ReceptionService implements IReceptionService {
     }
 
     async getAll(filters: ReceptionFilters): Promise<ReceptionResponse[]> {
-        return receptionsToArrayResDTO(await this.receptionRepo.findAll(filters));
+        return receptionsToArrayResDTO(
+            await this.receptionRepo.findAll(filters),
+        );
     }
 
-    async update(id: number, data: UpdateReceptionInput): Promise<ReceptionResponse> {
+    async update(
+        id: number,
+        data: UpdateReceptionInput,
+    ): Promise<ReceptionResponse> {
         // 1. Verificar id
         await this.getReceptionOrFail(id);
         // 2. Actualizar Receptione
@@ -79,5 +84,4 @@ export class ReceptionService implements IReceptionService {
             );
         }
     }
-
 }

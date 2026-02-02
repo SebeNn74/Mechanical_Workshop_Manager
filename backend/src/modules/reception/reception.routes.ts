@@ -12,7 +12,11 @@ import {
 
 const ReceptionRouter = Router();
 
-ReceptionRouter.post('/', validateDTO(CreateReceptionDTO), receptionController.add);
+ReceptionRouter.post(
+    '/',
+    validateDTO(CreateReceptionDTO),
+    receptionController.add,
+);
 
 ReceptionRouter.get(
     '/',

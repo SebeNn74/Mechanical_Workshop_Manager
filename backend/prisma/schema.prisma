@@ -9,7 +9,7 @@ datasource db {
 
 model Client {
   id             Int          @id @default(autoincrement())
-  documentType   DocumentType
+  documentType   DocumentType @default(CC)
   documentNumber String
   name           String
   phone          String
@@ -22,7 +22,7 @@ model Client {
 
 model Vehicle {
   id         Int         @id @default(autoincrement())
-  plateType  PlateType
+  plateType  PlateType   @default(PRIVATE)
   plate      String      @unique
   brand      String
   model      String
@@ -46,18 +46,26 @@ model Reception {
 
 model Budget {
   id          Int          @id @default(autoincrement())
-  status      BudgetStatus
-  total       Int
+  status      BudgetStatus @default(PENDING)
   createdAt   DateTime     @default(now())
   reception   Reception    @relation(fields: [receptionId], references: [id])
   receptionId Int          @unique
+  items       BudgetItem[]
+}
+
+model BudgetItem {
+  id             Int     @id @default(autoincrement())
+  description    String?
+  estimatedPrice Int
+  budget         Budget  @relation(fields: [budgetId], references: [id])
+  budgetId       Int
 }
 
 model ChecklistItem {
   id          Int        @id @default(autoincrement())
   block       String
   item        String
-  status      ItemStatus
+  status      ItemStatus @default(NOT_CHECKED)
   description String?
   reception   Reception  @relation(fields: [receptionId], references: [id])
   receptionId Int
@@ -78,15 +86,15 @@ model Repair {
 model RepairTask {
   id          Int     @id @default(autoincrement())
   description String?
-  price       Int
+  finalPrice  Int
   repair      Repair  @relation(fields: [repairId], references: [id])
   repairId    Int
 }
 
 model Photo {
-  id              Int            @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   path            String
-  checklistItem   ChecklistItem? @relation(fields: [checklistItemId], references: [id])
+  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id])
   checklistItemId Int
 }
 

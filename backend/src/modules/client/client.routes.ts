@@ -19,7 +19,7 @@ clientRouter.post(
     '/check-duplicates',
     validateDTO(DuplicateClientCheckDTO),
     validateDTO(ClientFiltersDTO, 'query'),
-    clientController.getDuplicates
+    clientController.getDuplicates,
 );
 
 clientRouter.get(
