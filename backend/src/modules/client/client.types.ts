@@ -11,6 +11,7 @@ export const ClientSchema = z
         documentType: DocumentType,
         documentNumber: z
             .string()
+            .regex(/^\d+$/, '* documentNumber debe contener solo dígitos')
             .min(6, '* documentNumber debe tener al menos 6 caracteres')
             .max(11, '* documentNumber no debe exceder los 11 caracteres'),
         name: z

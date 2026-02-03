@@ -16,14 +16,14 @@ export interface IClientService {
     add(client: CreateClientInput): Promise<ClientResponse>;
     existsById(id: number): Promise<boolean>;
     getById(id: number): Promise<ClientResponse>;
-    getDuplicates(data: DuplicateClientCheck): Promise<Client[]>;
+    isDuplicate(data: DuplicateClientCheck): Promise<boolean>;
     getAll(filters: ClientFilters): Promise<ClientResponse[]>;
     update(id: number, data: UpdateClientInput): Promise<ClientResponse>;
     delete(id: number): Promise<void>;
 }
 
 export class ClientService implements IClientService {
-    constructor(private readonly clientRepo: IClientRepository) {}
+    constructor(private readonly clientRepo: IClientRepository) { }
 
     async add(client: CreateClientInput): Promise<ClientResponse> {
         //* La validación de duplicados se realiza por aparte con getDuplicates
@@ -41,8 +41,9 @@ export class ClientService implements IClientService {
         return clientToResponseDTO(client);
     }
 
-    async getDuplicates(data: DuplicateClientCheck): Promise<Client[]> {
-        return this.clientRepo.findDuplicates(data);
+    async isDuplicate(data: DuplicateClientCheck): Promise<boolean> {
+        const existing = await this.clientRepo.findDuplicate(data);
+        return !!existing;
     }
 
     async getAll(filters: ClientFilters): Promise<ClientResponse[]> {

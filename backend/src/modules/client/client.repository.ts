@@ -11,7 +11,7 @@ export interface IClientRepository {
     create(data: CreateClientInput): Promise<Client>;
     existsById(id: number): Promise<boolean>;
     findById(id: number): Promise<Client | null>;
-    findDuplicates(data: DuplicateClientCheck): Promise<Client[]>;
+    findDuplicate(data: DuplicateClientCheck): Promise<Client | null>;
     findAll(filters: ClientFilters): Promise<Client[]>;
     update(id: number, data: UpdateClientInput): Promise<Client>;
     delete(id: number): Promise<Client>;
@@ -36,11 +36,13 @@ export class ClientRepository implements IClientRepository {
         });
     }
 
-    async findDuplicates(data: DuplicateClientCheck): Promise<Client[]> {
-        return await prisma.client.findMany({
+    async findDuplicate(data: DuplicateClientCheck): Promise<Client | null> {
+        return await prisma.client.findUnique({
             where: {
-                documentType: data.documentType,
-                documentNumber: data.documentNumber,
+                documentType_documentNumber: {
+                    documentType: data.documentType,
+                    documentNumber: data.documentNumber,
+                },
             },
         });
     }

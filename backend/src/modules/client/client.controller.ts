@@ -25,11 +25,11 @@ export class ClientController {
         }
     };
 
-    getDuplicates = async (req: Request, res: Response, next: NextFunction) => {
+    isDuplicate = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = (req as any).validatedBody;
-            const duplicates = await this.clientService.getDuplicates(data);
-            return res.json(duplicates);
+            const existing = await this.clientService.isDuplicate(data);
+            return res.json(existing);
         } catch (error) {
             next(error);
         }

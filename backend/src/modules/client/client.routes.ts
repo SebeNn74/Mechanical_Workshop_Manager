@@ -16,10 +16,10 @@ const clientRouter = Router();
 clientRouter.post('/', validateDTO(CreateClientDTO), clientController.add);
 
 clientRouter.post(
-    '/check-duplicates',
+    '/check-duplicate',
     validateDTO(DuplicateClientCheckDTO),
     validateDTO(ClientFiltersDTO, 'query'),
-    clientController.getDuplicates,
+    clientController.isDuplicate,
 );
 
 clientRouter.get(
