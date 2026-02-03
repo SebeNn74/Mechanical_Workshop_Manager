@@ -11,6 +11,7 @@ import {
 import { IChecklistItRepository } from './checklist_item.repository.js';
 import { NotFoundError } from '#/shared/errors/domain.error.js';
 import { IReceptionService } from '../reception/reception.service.js';
+import { IPhotoService } from './photo/photo.service.js';
 
 export interface IChecklistItService {
     add(budget: CreateChecklistItInput): Promise<ChecklistItResponse>;
@@ -28,6 +29,7 @@ export class ChecklistItService implements IChecklistItService {
     constructor(
         private readonly checklistItRepo: IChecklistItRepository,
         private readonly receptionService: IReceptionService,
+        private readonly photoService: IPhotoService,
     ) {}
 
     async add(

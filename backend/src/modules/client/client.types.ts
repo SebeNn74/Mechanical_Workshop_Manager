@@ -23,7 +23,10 @@ export const ClientSchema = z
             .length(10, '* phone debe tener exactamente 10 dígitos'),
         email: z
             .string()
-            .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, '* email debe tener un formato válido')
+            .regex(
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                '* email debe tener un formato válido',
+            )
             .min(5, '* email debe tener al menos 5 caracteres')
             .max(200, '* email no debe exceder los 200 caracteres')
             .nullable(),

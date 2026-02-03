@@ -61,7 +61,7 @@ export class RepairTaskService implements IRepairTaskService {
     async delete(id: number): Promise<void> {
         // 1. Verificar id
         await this.getRepairTaskOrFail(id);
-        // 2. Eliminar Budget
+        // 2. Eliminar RepairTask
         await this.repairTaskRepo.delete(id);
     }
 
