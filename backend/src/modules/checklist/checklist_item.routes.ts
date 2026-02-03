@@ -8,6 +8,8 @@ import {
     CreateChecklistItDTO,
     UpdateChecklistItDTO,
     ChecklistItFiltersDTO,
+    CreateChecklistItBulkDTO,
+    UpdateChecklistItBulkDTO,
 } from './checklist_item.types.js';
 
 const ChecklistItRouter = Router();
@@ -16,6 +18,12 @@ ChecklistItRouter.post(
     '/',
     validateDTO(CreateChecklistItDTO),
     checklistItController.add,
+);
+
+ChecklistItRouter.post(
+    '/bulk',
+    validateDTO(CreateChecklistItBulkDTO),
+    checklistItController.addBulk,
 );
 
 ChecklistItRouter.get(
@@ -31,10 +39,22 @@ ChecklistItRouter.get(
 );
 
 ChecklistItRouter.put(
+    '/bulk',
+    validateDTO(UpdateChecklistItBulkDTO),
+    checklistItController.updateBulk,
+);
+
+ChecklistItRouter.put(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     validateDTO(UpdateChecklistItDTO),
     checklistItController.update,
+);
+
+ChecklistItRouter.delete(
+    '/by-reception/:id',
+    validateDTO(ParamIdDTO, 'params'),
+    checklistItController.deleteByReceptionId,
 );
 
 ChecklistItRouter.delete(

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-// Budget Base Schemas
+// ChecklistItem Base Schemas
 //* -----------------------------
 export const ItemStatus = z.enum(['GOOD', 'REGULAR', 'BAD', 'NOT_CHECKED']);
 
@@ -43,6 +43,22 @@ export const UpdateChecklistItDTO = ChecklistItemSchema.omit({
 // Responses
 export const ChecklistItResponseDTO = ChecklistItemSchema.strict();
 
+// Bulk Operations
+// Bulk Create
+export const CreateChecklistItBulkDTO = z.array(CreateChecklistItDTO).min(1);
+
+// Bulk Update
+export const UpdateChecklistItBulkItemDTO = z
+    .object({
+        id: z.number().int().positive(),
+        data: UpdateChecklistItDTO,
+    })
+    .strict();
+
+export const UpdateChecklistItBulkDTO = z
+    .array(UpdateChecklistItBulkItemDTO)
+    .min(1);
+
 // Filters
 export const ChecklistItFiltersDTO = z
     .object({
@@ -60,6 +76,17 @@ export type CreateChecklistItInput = z.infer<typeof CreateChecklistItDTO>;
 export type UpdateChecklistItInput = z.infer<typeof UpdateChecklistItDTO>;
 export type ChecklistItResponse = z.infer<typeof ChecklistItResponseDTO>;
 export type ChecklistItFilters = z.infer<typeof ChecklistItFiltersDTO>;
+
+// Bulk Types
+export type CreateChecklistItBulkInput = z.infer<
+    typeof CreateChecklistItBulkDTO
+>;
+export type UpdateChecklistItBulkItem = z.infer<
+    typeof UpdateChecklistItBulkItemDTO
+>;
+export type UpdateChecklistItBulkInput = z.infer<
+    typeof UpdateChecklistItBulkDTO
+>;
 
 // ChecklistItem To DTOs
 //* -----------------------------

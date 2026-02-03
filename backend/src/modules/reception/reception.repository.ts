@@ -1,4 +1,5 @@
 import prisma from '#/config/prisma.js';
+import { generateMonthlyCode } from '#/shared/utils/code.generator.js';
 import {
     Reception,
     CreateReceptionInput,
@@ -17,7 +18,14 @@ export interface IReceptionRepository {
 
 export class ReceptionRepository implements IReceptionRepository {
     async create(data: CreateReceptionInput): Promise<Reception> {
-        return await prisma.reception.create({ data });
+        const receptionNumber = await generateMonthlyCode({
+            prefix: 'REC',
+            tableName: 'reception',
+            fieldName: 'receptionNumber',
+        });
+        return await prisma.reception.create({
+            data: { ...data, receptionNumber },
+        });
     }
 
     async existsById(id: number): Promise<boolean> {

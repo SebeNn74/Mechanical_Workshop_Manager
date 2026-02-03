@@ -1,18 +1,30 @@
 import { NextFunction, Request, Response } from 'express';
 import { IChecklistItService } from './checklist_item.service.js';
 import {
+    CreateChecklistItBulkInput,
     CreateChecklistItInput,
+    UpdateChecklistItBulkInput,
     UpdateChecklistItInput,
 } from './checklist_item.types.js';
 
 export class ChecklistItController {
-    constructor(private readonly checklistItService: IChecklistItService) {}
+    constructor(private readonly checklistItService: IChecklistItService) { }
 
     add = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = (req as any).validatedBody as CreateChecklistItInput;
             const newChecklistIt = await this.checklistItService.add(data);
             return res.status(201).json(newChecklistIt);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    addBulk = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const data = (req as any).validatedBody as CreateChecklistItBulkInput;
+            const newChecklistItems = await this.checklistItService.addBulk(data);
+            return res.status(201).json(newChecklistItems);
         } catch (error) {
             next(error);
         }
@@ -53,6 +65,16 @@ export class ChecklistItController {
         }
     };
 
+    updateBulk = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const items = (req as any).validatedBody as UpdateChecklistItBulkInput;
+            const checklistItemsUpdated = await this.checklistItService.updateBulk(items);
+            return res.json(checklistItemsUpdated);
+        } catch (error) {
+            next(error);
+        }
+    };
+
     delete = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = (req as any).validatedParams;
@@ -64,4 +86,17 @@ export class ChecklistItController {
             next(error);
         }
     };
+
+        deleteByReceptionId = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { id } = (req as any).validatedParams;
+            await this.checklistItService.deleteByReceptionId(id);
+            return res
+                .status(200)
+                .json({ message: 'Items de recepción '+id+' eliminados' });
+        } catch (error) {
+            next(error);
+        }
+    };
+
 }

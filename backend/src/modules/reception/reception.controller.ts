@@ -56,7 +56,7 @@ export class ReceptionController {
         try {
             const { id } = (req as any).validatedParams;
             await this.receptionService.delete(id);
-            return res.status(200).json({ message: 'Recepción eliminado' });
+            return res.status(200).json({ message: 'Registro de recepción eliminada' });
         } catch (error) {
             next(error);
         }

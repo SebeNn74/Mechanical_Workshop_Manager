@@ -2,6 +2,7 @@ import express from 'express';
 import clientRouter from './modules/client/index.js';
 import vehicleRouter from './modules/vehicle/index.js';
 import receptionRouter from './modules/reception/index.js';
+import checklistItRouter from './modules/checklist/checklist_item.routes.js';
 import budgetRouter from './modules/budget/index.js';
 import repairRouter from './modules/repair/index.js';
 import { handleErrorMiddleware } from '#/shared/middlewares/error.middleware.js';
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/clients', clientRouter);
 app.use('/vehicles', vehicleRouter);
 app.use('/receptions', receptionRouter);
+app.use('/checklist-items', checklistItRouter);
 app.use('/budgets', budgetRouter);
 app.use('/repairs', repairRouter);
 

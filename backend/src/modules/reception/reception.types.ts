@@ -26,11 +26,13 @@ export const ReceptionSchema = z
 // Create
 export const CreateReceptionDTO = ReceptionSchema.omit({
     id: true,
+    receptionNumber: true,
 }).strict();
 
 // Update
 export const UpdateReceptionDTO = ReceptionSchema.omit({
     id: true,
+    receptionNumber: true,
 })
     .partial()
     .strict();
