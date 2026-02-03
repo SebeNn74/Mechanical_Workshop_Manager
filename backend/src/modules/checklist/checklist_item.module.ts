@@ -12,7 +12,7 @@ const photoService = new PhotoService(photoRepository);
 const checklistItService = new ChecklistItService(
     checklistItRepository,
     receptionService,
-    photoService
+    photoService,
 );
 
 const checklistItController = new ChecklistItController(checklistItService);

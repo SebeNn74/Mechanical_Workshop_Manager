@@ -17,7 +17,7 @@ export interface IVehicleService {
     add(vehicle: CreateVehicleInput): Promise<VehicleResponse>;
     existsById(id: number): Promise<boolean>;
     getById(id: number): Promise<VehicleResponse>;
-    getDuplicates(data: DuplicateVehicleCheck): Promise<Vehicle[]>;
+    isDuplicate(data: DuplicateVehicleCheck): Promise<boolean>;
     getAll(filters: VehicleFilters): Promise<VehicleResponse[]>;
     update(id: number, data: UpdateVehicleInput): Promise<VehicleResponse>;
     delete(id: number): Promise<void>;
@@ -47,8 +47,9 @@ export class VehicleService implements IVehicleService {
         return vehicleToResponseDTO(vehicle);
     }
 
-    async getDuplicates(data: DuplicateVehicleCheck): Promise<Vehicle[]> {
-        return this.vehicleRepo.findDuplicates(data);
+    async isDuplicate(data: DuplicateVehicleCheck): Promise<boolean> {
+        const existing = await this.vehicleRepo.findDuplicate(data);
+        return !!existing;
     }
 
     async getAll(filters: VehicleFilters): Promise<VehicleResponse[]> {

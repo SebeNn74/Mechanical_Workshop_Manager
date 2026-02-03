@@ -8,8 +8,8 @@ export class VehicleController {
     add = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = (req as any).validatedBody as CreateVehicleInput;
-            const newvehicle = await this.vehicleService.add(data);
-            return res.status(201).json(newvehicle);
+            const newVehicle = await this.vehicleService.add(data);
+            return res.status(201).json(newVehicle);
         } catch (error) {
             next(error);
         }
@@ -25,11 +25,16 @@ export class VehicleController {
         }
     };
 
-    getDuplicates = async (req: Request, res: Response, next: NextFunction) => {
+    isDuplicate = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = (req as any).validatedBody;
-            const duplicates = await this.vehicleService.getDuplicates(data);
-            return res.json(duplicates);
+            const existing = await this.vehicleService.isDuplicate(data);
+            return res.json({
+                exist: existing,
+                message: existing
+                    ? 'Vehículo ya registrado'
+                    : 'Vehículo no registrado',
+            });
         } catch (error) {
             next(error);
         }

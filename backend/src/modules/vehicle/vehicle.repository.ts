@@ -11,7 +11,7 @@ export interface IVehicleRepository {
     create(data: CreateVehicleInput): Promise<Vehicle>;
     existsById(id: number): Promise<boolean>;
     findById(id: number): Promise<Vehicle | null>;
-    findDuplicates(data: DuplicateVehicleCheck): Promise<Vehicle[]>;
+    findDuplicate(data: DuplicateVehicleCheck): Promise<Vehicle | null>;
     findAll(filters: VehicleFilters): Promise<Vehicle[]>;
     update(id: number, data: UpdateVehicleInput): Promise<Vehicle>;
     delete(id: number): Promise<Vehicle>;
@@ -36,8 +36,8 @@ export class VehicleRepository implements IVehicleRepository {
         });
     }
 
-    async findDuplicates(data: DuplicateVehicleCheck): Promise<Vehicle[]> {
-        return await prisma.vehicle.findMany({
+    async findDuplicate(data: DuplicateVehicleCheck): Promise<Vehicle | null> {
+        return await prisma.vehicle.findUnique({
             where: {
                 plate: data.plate,
             },

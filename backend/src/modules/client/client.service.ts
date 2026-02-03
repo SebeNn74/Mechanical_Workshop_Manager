@@ -23,7 +23,7 @@ export interface IClientService {
 }
 
 export class ClientService implements IClientService {
-    constructor(private readonly clientRepo: IClientRepository) { }
+    constructor(private readonly clientRepo: IClientRepository) {}
 
     async add(client: CreateClientInput): Promise<ClientResponse> {
         //* La validación de duplicados se realiza por aparte con getDuplicates

@@ -29,7 +29,12 @@ export class ClientController {
         try {
             const data = (req as any).validatedBody;
             const existing = await this.clientService.isDuplicate(data);
-            return res.json(existing);
+            return res.json({
+                exist: existing,
+                message: existing
+                    ? 'Cliente ya registrado'
+                    : 'Cliente no registrado',
+            });
         } catch (error) {
             next(error);
         }

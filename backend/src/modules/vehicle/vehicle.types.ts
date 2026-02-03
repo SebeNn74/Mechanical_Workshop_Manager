@@ -12,7 +12,10 @@ export const VehicleSchema = z
         plateType: PlateType,
         plate: z
             .string()
-            .length(6, '* plate debe tener exactamente 6 caracteres'),
+            .regex(
+                /^[A-Z0-9]{6}$/,
+                '* plate debe contener solo letras mayúsculas y números',
+            ),
         brand: z
             .string()
             .min(3, '* brand debe tener al menos 3 caracteres')

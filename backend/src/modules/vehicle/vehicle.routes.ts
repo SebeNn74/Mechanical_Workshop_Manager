@@ -16,10 +16,10 @@ const vehicleRouter = Router();
 vehicleRouter.post('/', validateDTO(CreateVehicleDTO), vehicleController.add);
 
 vehicleRouter.post(
-    '/check-duplicates',
+    '/check-duplicate',
     validateDTO(DuplicateVehicleCheckDTO),
     validateDTO(VehicleFiltersDTO, 'query'),
-    vehicleController.getDuplicates,
+    vehicleController.isDuplicate,
 );
 
 vehicleRouter.get(

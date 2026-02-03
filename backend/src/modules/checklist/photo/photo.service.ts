@@ -16,10 +16,7 @@ export interface IPhotoService {
     existsById(id: number): Promise<boolean>;
     getById(id: number): Promise<PhotoResponse>;
     getAll(filters: PhotoFilters): Promise<PhotoResponse[]>;
-    update(
-        id: number,
-        data: UpdatePhotoInput,
-    ): Promise<PhotoResponse>;
+    update(id: number, data: UpdatePhotoInput): Promise<PhotoResponse>;
     delete(id: number): Promise<void>;
 }
 
@@ -42,15 +39,10 @@ export class PhotoService implements IPhotoService {
     }
 
     async getAll(filters: PhotoFilters): Promise<PhotoResponse[]> {
-        return photosToArrayResDTO(
-            await this.photoRepo.findAll(filters),
-        );
+        return photosToArrayResDTO(await this.photoRepo.findAll(filters));
     }
 
-    async update(
-        id: number,
-        data: UpdatePhotoInput,
-    ): Promise<PhotoResponse> {
+    async update(id: number, data: UpdatePhotoInput): Promise<PhotoResponse> {
         // 1. Verificar id
         await this.getPhotoOrFail(id);
         // 2. Actualizar Photo
@@ -68,9 +60,7 @@ export class PhotoService implements IPhotoService {
     private async getPhotoOrFail(id: number): Promise<Photo> {
         const photo = await this.photoRepo.findById(id);
         if (!photo)
-            throw new NotFoundError(
-                'El photo con el id solicitado no existe',
-            );
+            throw new NotFoundError('El photo con el id solicitado no existe');
         return photo;
     }
 }
