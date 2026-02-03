@@ -12,55 +12,55 @@ import {
     UpdateChecklistItBulkDTO,
 } from './checklist_item.types.js';
 
-const ChecklistItRouter = Router();
+const checklistItRouter = Router();
 
-ChecklistItRouter.post(
+checklistItRouter.post(
     '/',
     validateDTO(CreateChecklistItDTO),
     checklistItController.add,
 );
 
-ChecklistItRouter.post(
+checklistItRouter.post(
     '/bulk',
     validateDTO(CreateChecklistItBulkDTO),
     checklistItController.addBulk,
 );
 
-ChecklistItRouter.get(
+checklistItRouter.get(
     '/',
     validateDTO(ChecklistItFiltersDTO, 'query'),
     checklistItController.getAll,
 );
 
-ChecklistItRouter.get(
+checklistItRouter.get(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     checklistItController.getById,
 );
 
-ChecklistItRouter.put(
+checklistItRouter.put(
     '/bulk',
     validateDTO(UpdateChecklistItBulkDTO),
     checklistItController.updateBulk,
 );
 
-ChecklistItRouter.put(
+checklistItRouter.put(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     validateDTO(UpdateChecklistItDTO),
     checklistItController.update,
 );
 
-ChecklistItRouter.delete(
+checklistItRouter.delete(
     '/by-reception/:id',
     validateDTO(ParamIdDTO, 'params'),
     checklistItController.deleteByReceptionId,
 );
 
-ChecklistItRouter.delete(
+checklistItRouter.delete(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     checklistItController.delete,
 );
 
-export default ChecklistItRouter;
+export default checklistItRouter;

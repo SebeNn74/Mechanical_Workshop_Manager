@@ -5,6 +5,7 @@ import receptionRouter from './modules/reception/index.js';
 import checklistItRouter from './modules/checklist/checklist_item.routes.js';
 import budgetRouter from './modules/budget/index.js';
 import repairRouter from './modules/repair/index.js';
+import photoRouter from './modules/photo/photo.routes.js';
 import { handleErrorMiddleware } from '#/shared/middlewares/error.middleware.js';
 
 const app = express();
@@ -16,6 +17,7 @@ app.use('/receptions', receptionRouter);
 app.use('/checklist-items', checklistItRouter);
 app.use('/budgets', budgetRouter);
 app.use('/repairs', repairRouter);
+app.use('/photos', photoRouter);
 
 app.use(handleErrorMiddleware);
 

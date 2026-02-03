@@ -27,6 +27,7 @@ export class ReceptionService implements IReceptionService {
         private readonly vehicleService: IVehicleService,
     ) {}
 
+    //TODO: Agregar validación mileageAtEntry >= vehicle.mileage
     async add(reception: CreateReceptionInput): Promise<ReceptionResponse> {
         // 1. Validar existencia de vehicle
         await this.ensureVehicleExists(reception.vehicleId);

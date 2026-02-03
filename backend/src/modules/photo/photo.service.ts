@@ -12,7 +12,7 @@ import {
 
 import { IPhotoRepository } from './photo.repository.js';
 import { NotFoundError } from '#/shared/errors/domain.error.js';
-import { IChecklistItService } from '../checklist_item.service.js';
+import { IChecklistItService } from '../checklist/checklist_item.service.js';
 
 export interface IPhotoService {
     add(budget: CreatePhotoInput): Promise<PhotoResponse>;

@@ -10,37 +10,37 @@ import {
     ReceptionFiltersDTO,
 } from './reception.types.js';
 
-const ReceptionRouter = Router();
+const receptionRouter = Router();
 
-ReceptionRouter.post(
+receptionRouter.post(
     '/',
     validateDTO(CreateReceptionDTO),
     receptionController.add,
 );
 
-ReceptionRouter.get(
+receptionRouter.get(
     '/',
     validateDTO(ReceptionFiltersDTO, 'query'),
     receptionController.getAll,
 );
 
-ReceptionRouter.get(
+receptionRouter.get(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     receptionController.getById,
 );
 
-ReceptionRouter.put(
+receptionRouter.put(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     validateDTO(UpdateReceptionDTO),
     receptionController.update,
 );
 
-ReceptionRouter.delete(
+receptionRouter.delete(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     receptionController.delete,
 );
 
-export default ReceptionRouter;
+export default receptionRouter;

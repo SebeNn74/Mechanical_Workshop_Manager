@@ -13,7 +13,7 @@ import {
 import { IChecklistItRepository } from './checklist_item.repository.js';
 import { NotFoundError } from '#/shared/errors/domain.error.js';
 import { IReceptionService } from '../reception/reception.service.js';
-import { IPhotoService } from './photo/photo.service.js';
+import { IPhotoService } from '../photo/photo.service.js';
 
 export interface IChecklistItService {
     add(budget: CreateChecklistItInput): Promise<ChecklistItResponse>;
