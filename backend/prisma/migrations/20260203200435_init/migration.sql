@@ -68,7 +68,7 @@ CREATE TABLE "Photo" (
     "filename" TEXT NOT NULL,
     "path" TEXT NOT NULL,
     "checklistItemId" INTEGER NOT NULL,
-    CONSTRAINT "Photo_checklistItemId_fkey" FOREIGN KEY ("checklistItemId") REFERENCES "ChecklistItem" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Photo_checklistItemId_fkey" FOREIGN KEY ("checklistItemId") REFERENCES "ChecklistItem" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable

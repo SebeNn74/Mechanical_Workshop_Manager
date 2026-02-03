@@ -99,7 +99,7 @@ model Photo {
   id              Int           @id @default(autoincrement())
   filename        String
   path            String
-  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id])
+  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
   checklistItemId Int
 
   @@index([checklistItemId])

@@ -38,7 +38,7 @@ export class ChecklistItService implements IChecklistItService {
         private readonly checklistItRepo: IChecklistItRepository,
         private readonly receptionService: IReceptionService,
         private readonly photoService: IPhotoService,
-    ) { }
+    ) {}
 
     async add(
         checklistIt: CreateChecklistItInput,
@@ -59,8 +59,7 @@ export class ChecklistItService implements IChecklistItService {
             await this.ensureReceptionExists(receptionId);
         }
         // 2. Crear todos los items
-        const createdItems =
-            await this.checklistItRepo.createBulk(items);
+        const createdItems = await this.checklistItRepo.createBulk(items);
         return checklistItemsToArrayResDTO(createdItems);
     }
 
@@ -79,7 +78,9 @@ export class ChecklistItService implements IChecklistItService {
         );
     }
 
-    async getByReceptionId(receptionId: number): Promise<ChecklistItResponse[]> {
+    async getByReceptionId(
+        receptionId: number,
+    ): Promise<ChecklistItResponse[]> {
         // Validar que la recepción exista
         await this.ensureReceptionExists(receptionId);
         return checklistItemsToArrayResDTO(
@@ -114,13 +115,22 @@ export class ChecklistItService implements IChecklistItService {
     async delete(id: number): Promise<void> {
         // 1. Verificar id
         await this.getChecklistItOrFail(id);
-        // 2. Eliminar ChecklistItem
+        // 2. Eliminar todas las fotos del item ANTES de eliminarlo
+        await this.photoService.deleteByChecklistItemId(id);
+        // 3. Eliminar ChecklistItem
         await this.checklistItRepo.delete(id);
     }
 
     async deleteByReceptionId(receptionId: number): Promise<number> {
-        // Validar que la recepción exista
+        // 1. Validar que la recepción exista
         await this.ensureReceptionExists(receptionId);
+        // 2. Obtener todos los items de la recepción
+        const items = await this.checklistItRepo.findAll({ receptionId });
+        // 3. Eliminar fotos de cada item
+        for (const item of items) {
+            await this.photoService.deleteByChecklistItemId(item.id);
+        }
+        // 4. Eliminar todos los items
         return await this.checklistItRepo.deleteByReceptionId(receptionId);
     }
 

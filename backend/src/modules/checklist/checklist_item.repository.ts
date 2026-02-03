@@ -25,11 +25,11 @@ export class ChecklistItRepository implements IChecklistItRepository {
         return await prisma.checklistItem.create({ data });
     }
 
-    async createBulk(items: CreateChecklistItBulkInput): Promise<ChecklistItem[]> {
+    async createBulk(
+        items: CreateChecklistItBulkInput,
+    ): Promise<ChecklistItem[]> {
         const createdItems = await prisma.$transaction(
-            items.map((item) =>
-                prisma.checklistItem.create({ data: item }),
-            ),
+            items.map((item) => prisma.checklistItem.create({ data: item })),
         );
         return createdItems;
     }
@@ -64,7 +64,9 @@ export class ChecklistItRepository implements IChecklistItRepository {
         });
     }
 
-    async updateBulk(items: UpdateChecklistItBulkItem[]): Promise<ChecklistItem[]> {
+    async updateBulk(
+        items: UpdateChecklistItBulkItem[],
+    ): Promise<ChecklistItem[]> {
         const updatedItems = await prisma.$transaction(
             items.map(({ id, data }) =>
                 prisma.checklistItem.update({
@@ -88,5 +90,4 @@ export class ChecklistItRepository implements IChecklistItRepository {
         });
         return result.count;
     }
-
 }

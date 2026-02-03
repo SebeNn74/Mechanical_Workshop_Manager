@@ -35,6 +35,20 @@ export const UpdatePhotoDTO = PhotoSchema.omit({
 // Responses
 export const PhotoResponseDTO = PhotoSchema.strict();
 
+// Bulk Operations
+// Bulk Create
+export const CreatePhotoBulkDTO = z.array(CreatePhotoDTO).min(1);
+
+// Bulk Update
+export const UpdatePhotoBulkItemDTO = z
+    .object({
+        id: z.number().int().positive(),
+        data: UpdatePhotoDTO,
+    })
+    .strict();
+
+export const UpdatePhotoBulkDTO = z.array(UpdatePhotoBulkItemDTO).min(1);
+
 // Filters
 export const PhotoFiltersDTO = z
     .object({
@@ -49,6 +63,11 @@ export type CreatePhotoInput = z.infer<typeof CreatePhotoDTO>;
 export type UpdatePhotoInput = z.infer<typeof UpdatePhotoDTO>;
 export type PhotoResponse = z.infer<typeof PhotoResponseDTO>;
 export type PhotoFilters = z.infer<typeof PhotoFiltersDTO>;
+
+// Bulk Types
+export type CreatePhotoBulkInput = z.infer<typeof CreatePhotoBulkDTO>;
+export type UpdatePhotoBulkItem = z.infer<typeof UpdatePhotoBulkItemDTO>;
+export type UpdatePhotoBulkInput = z.infer<typeof UpdatePhotoBulkDTO>;
 
 // Photo To DTOs
 //* -----------------------------
