@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { BudgetItemSchema } from './budget_item/budget_item.types.js';
 
 // Budget Base Schemas
 //* -----------------------------
@@ -22,9 +23,8 @@ export const BudgetSchema = z
 // DTOs
 //* -----------------------------
 // Create
-export const CreateBudgetDTO = BudgetSchema.omit({
-    id: true,
-    createdAt: true,
+export const CreateBudgetDTO = BudgetSchema.pick({
+    receptionId: true,
 }).strict();
 
 // Update
@@ -37,6 +37,15 @@ export const UpdateBudgetDTO = BudgetSchema.omit({
 
 // Responses
 export const BudgetResponseDTO = BudgetSchema.strict();
+
+export const BudgetWithItemsDTO = BudgetSchema.extend({
+    items: z.array(BudgetItemSchema),
+}).strict();
+
+export const BudgetDetailedResponseDTO = BudgetSchema.extend({
+    items: z.array(BudgetItemSchema),
+    totalEstimated: z.number().int().positive(),
+}).strict();
 
 // Filters
 export const BudgetFiltersDTO = z
@@ -53,6 +62,8 @@ export type Budget = z.infer<typeof BudgetSchema>;
 export type CreateBudgetInput = z.infer<typeof CreateBudgetDTO>;
 export type UpdateBudgetInput = z.infer<typeof UpdateBudgetDTO>;
 export type BudgetResponse = z.infer<typeof BudgetResponseDTO>;
+export type BudgetWithItems = z.infer<typeof BudgetWithItemsDTO>;
+export type BudgetDetailedResponse = z.infer<typeof BudgetDetailedResponseDTO>;
 export type BudgetFilters = z.infer<typeof BudgetFiltersDTO>;
 
 // Budget To DTOs

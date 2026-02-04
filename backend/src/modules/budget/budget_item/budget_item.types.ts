@@ -11,7 +11,7 @@ export const BudgetItemSchema = z
             .string()
             .min(3, '* description debe tener al menos 3 caracteres')
             .max(200, '* description no debe exceder los 200 caracteres'),
-        estimatedPrice: z.number().int().positive(),
+        estimatedPrice: z.number().int().nonnegative(),
     })
     .strict();
 
@@ -25,12 +25,29 @@ export const CreateBudgetItemDTO = BudgetItemSchema.omit({
 // Update
 export const UpdateBudgetItemDTO = BudgetItemSchema.omit({
     id: true,
+    budgetId: true,
 })
     .partial()
     .strict();
 
 // Responses
 export const BudgetItemResponseDTO = BudgetItemSchema.strict();
+
+// Bulk Operations
+// Bulk Create
+export const CreateBudgetItemBulkDTO = z.array(CreateBudgetItemDTO).min(1);
+
+// Bulk Update
+export const UpdateBudgetItemBulkItDTO = z
+    .object({
+        id: z.number().int().positive(),
+        data: UpdateBudgetItemDTO,
+    })
+    .strict();
+
+export const UpdateBudgetItemBulkDTO = z
+    .array(UpdateBudgetItemBulkItDTO)
+    .min(1);
 
 // Filters
 export const BudgetItemFiltersDTO = z
@@ -46,6 +63,13 @@ export type CreateBudgetItemInput = z.infer<typeof CreateBudgetItemDTO>;
 export type UpdateBudgetItemInput = z.infer<typeof UpdateBudgetItemDTO>;
 export type BudgetItemResponse = z.infer<typeof BudgetItemResponseDTO>;
 export type BudgetItemFilters = z.infer<typeof BudgetItemFiltersDTO>;
+
+// Bulk Types
+export type CreateBudgetItemBulkInput = z.infer<typeof CreateBudgetItemBulkDTO>;
+export type UpdateBudgetItemBulkItem = z.infer<
+    typeof UpdateBudgetItemBulkItDTO
+>;
+export type UpdateBudgetItemBulkInput = z.infer<typeof UpdateBudgetItemBulkDTO>;
 
 // BudgetItem To DTOs
 //* -----------------------------

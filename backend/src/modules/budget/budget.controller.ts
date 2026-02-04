@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { IBudgetService } from './budget.service.js';
 import { CreateBudgetInput, UpdateBudgetInput } from './budget.types.js';
+import { CreateBudgetItemInput } from './budget_item/budget_item.types.js';
 
 export class BudgetController {
     constructor(private readonly budgetService: IBudgetService) {}
@@ -51,6 +52,55 @@ export class BudgetController {
             const { id } = (req as any).validatedParams;
             await this.budgetService.delete(id);
             return res.status(200).json({ message: 'Presupuesto eliminado' });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    //* Endpoint to manage BudgetItems
+    addItem = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const data = (req as any).validatedBody as CreateBudgetItemInput;
+            const newItem = await this.budgetService.addItem(data);
+            return res.status(201).json(newItem);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    removeItem = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { itemId } = (req as any).validatedParams;
+            await this.budgetService.removeItem(itemId);
+            return res.json({ message: 'Item removido del presupuesto' });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getBudgetWithItems = async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const { id } = (req as any).validatedParams;
+            const budget = await this.budgetService.getWithItems(id);
+            return res.json(budget);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    getBudgetSummary = async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const { id } = (req as any).validatedParams;
+            const summary = await this.budgetService.getBudgetSummary(id);
+            return res.json(summary);
         } catch (error) {
             next(error);
         }

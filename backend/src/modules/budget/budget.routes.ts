@@ -9,34 +9,59 @@ import {
     UpdateBudgetDTO,
     BudgetFiltersDTO,
 } from './budget.types.js';
+import { CreateBudgetItemDTO } from './budget_item/budget_item.types.js';
 
-const BudgetRouter = Router();
+const budgetRouter = Router();
 
-BudgetRouter.post('/', validateDTO(CreateBudgetDTO), budgetController.add);
+budgetRouter.post('/', validateDTO(CreateBudgetDTO), budgetController.add);
 
-BudgetRouter.get(
+budgetRouter.post(
+    '/items',
+    validateDTO(CreateBudgetItemDTO),
+    budgetController.addItem,
+);
+
+budgetRouter.get(
     '/',
     validateDTO(BudgetFiltersDTO, 'query'),
     budgetController.getAll,
 );
 
-BudgetRouter.get(
+budgetRouter.get(
+    '/:id/items',
+    validateDTO(ParamIdDTO, 'params'),
+    budgetController.getBudgetWithItems,
+);
+
+budgetRouter.get(
+    '/:id/summary',
+    validateDTO(ParamIdDTO, 'params'),
+    budgetController.getBudgetSummary,
+);
+
+budgetRouter.get(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     budgetController.getById,
 );
 
-BudgetRouter.put(
+budgetRouter.put(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     validateDTO(UpdateBudgetDTO),
     budgetController.update,
 );
 
-BudgetRouter.delete(
+budgetRouter.delete(
+    '/items/:id',
+    validateDTO(ParamIdDTO, 'params'),
+    budgetController.removeItem,
+);
+
+budgetRouter.delete(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     budgetController.delete,
 );
 
-export default BudgetRouter;
+export default budgetRouter;

@@ -4,20 +4,32 @@ import {
     CreateBudgetItemInput,
     UpdateBudgetItemInput,
     BudgetItemFilters,
+    CreateBudgetItemBulkInput,
+    UpdateBudgetItemBulkItem,
 } from './budget_item.types.js';
 
 export interface IBudgetItemRepository {
     create(data: CreateBudgetItemInput): Promise<BudgetItem>;
+    createBulk(items: CreateBudgetItemBulkInput): Promise<BudgetItem[]>;
     existsById(id: number): Promise<boolean>;
     findById(id: number): Promise<BudgetItem | null>;
     findAll(filters: BudgetItemFilters): Promise<BudgetItem[]>;
     update(id: number, data: UpdateBudgetItemInput): Promise<BudgetItem>;
+    updateBulk(items: UpdateBudgetItemBulkItem[]): Promise<BudgetItem[]>;
     delete(id: number): Promise<BudgetItem>;
+    deleteByBudgetId(budgetId: number): Promise<number>;
 }
 
 export class BudgetItemRepository implements IBudgetItemRepository {
     async create(data: CreateBudgetItemInput): Promise<BudgetItem> {
         return await prisma.budgetItem.create({ data });
+    }
+
+    async createBulk(items: CreateBudgetItemBulkInput): Promise<BudgetItem[]> {
+        const createdItems = await prisma.$transaction(
+            items.map((item) => prisma.budgetItem.create({ data: item })),
+        );
+        return createdItems;
     }
 
     async existsById(id: number): Promise<boolean> {
@@ -47,9 +59,28 @@ export class BudgetItemRepository implements IBudgetItemRepository {
         });
     }
 
+    async updateBulk(items: UpdateBudgetItemBulkItem[]): Promise<BudgetItem[]> {
+        const updatedPhotos = await prisma.$transaction(
+            items.map(({ id, data }) =>
+                prisma.budgetItem.update({
+                    where: { id },
+                    data,
+                }),
+            ),
+        );
+        return updatedPhotos;
+    }
+
     async delete(id: number): Promise<BudgetItem> {
         return await prisma.budgetItem.delete({
             where: { id },
         });
+    }
+
+    async deleteByBudgetId(budgetId: number): Promise<number> {
+        const result = await prisma.budgetItem.deleteMany({
+            where: { budgetId },
+        });
+        return result.count;
     }
 }

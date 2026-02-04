@@ -1,4 +1,5 @@
 import prisma from '#/config/prisma.js';
+import { generateMonthlyCode } from '#/shared/utils/code.generator.js';
 import {
     Budget,
     CreateBudgetInput,
@@ -17,7 +18,14 @@ export interface IBudgetRepository {
 
 export class BudgetRepository implements IBudgetRepository {
     async create(data: CreateBudgetInput): Promise<Budget> {
-        return await prisma.budget.create({ data });
+        const budgetNumber = await generateMonthlyCode({
+            prefix: 'PRS',
+            tableName: 'budget',
+            fieldName: 'budgetNumber',
+        });
+        return await prisma.budget.create({
+            data: { ...data, budgetNumber },
+        });
     }
 
     async existsById(id: number): Promise<boolean> {

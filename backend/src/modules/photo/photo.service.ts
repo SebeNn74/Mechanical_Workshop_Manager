@@ -52,7 +52,7 @@ export class PhotoService implements IPhotoService {
             await this.ensureChecklistItemExists(checklistItemId);
         }
 
-        // 2. Crear todas las fotos en una transacción
+        // 2. Crear todas las fotos
         const createdPhotos = await this.photoRepo.createBulk(items);
         return photosToArrayResDTO(createdPhotos);
     }

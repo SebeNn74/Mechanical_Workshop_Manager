@@ -125,7 +125,7 @@ model BudgetItem {
   id             Int         @id @default(autoincrement())
   description    String
   estimatedPrice Int
-  budget         Budget      @relation(fields: [budgetId], references: [id])
+  budget         Budget      @relation(fields: [budgetId], references: [id], onDelete: Cascade)
   budgetId       Int
   repairTasks    RepairTask?
 
@@ -153,7 +153,7 @@ model RepairTask {
   finalPrice   Int
   repair       Repair     @relation(fields: [repairId], references: [id])
   repairId     Int
-  budgetItem   BudgetItem @relation(fields: [budgetItemId], references: [id])
+  budgetItem   BudgetItem @relation(fields: [budgetItemId], references: [id], onDelete: Cascade)
   budgetItemId Int        @unique
 
   @@index([repairId])
