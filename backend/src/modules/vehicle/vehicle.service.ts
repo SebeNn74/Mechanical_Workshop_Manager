@@ -62,7 +62,7 @@ export class VehicleService implements IVehicleService {
     ): Promise<VehicleResponse> {
         // 1. Verificar id
         await this.getVehicleOrFail(id);
-        // 2. Actualizar Vehiclee
+        // 2. Actualizar Vehicle
         const updated = await this.vehicleRepo.update(id, data);
         return vehicleToResponseDTO(updated);
     }

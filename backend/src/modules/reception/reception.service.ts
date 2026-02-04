@@ -9,7 +9,10 @@ import {
 } from './reception.types.js';
 
 import { IReceptionRepository } from './reception.repository.js';
-import { NotFoundError } from '#/shared/errors/domain.error.js';
+import {
+    BusinessValidationError,
+    NotFoundError,
+} from '#/shared/errors/domain.error.js';
 import { IVehicleService } from '../vehicle/vehicle.service.js';
 
 export interface IReceptionService {
@@ -27,11 +30,15 @@ export class ReceptionService implements IReceptionService {
         private readonly vehicleService: IVehicleService,
     ) {}
 
-    //TODO: Agregar validación mileageAtEntry >= vehicle.mileage
     async add(reception: CreateReceptionInput): Promise<ReceptionResponse> {
         // 1. Validar existencia de vehicle
         await this.ensureVehicleExists(reception.vehicleId);
-        // 2. Crear Reception
+        // 2. Validar mileageAtEntry
+        await this.ensureMileageIsValid(
+            reception.vehicleId,
+            reception.mileageAtEntry,
+        );
+        // 3. Crear Reception
         const newReception = await this.receptionRepo.create(reception);
         return receptionToResponseDTO(newReception);
     }
@@ -56,7 +63,14 @@ export class ReceptionService implements IReceptionService {
         data: UpdateReceptionInput,
     ): Promise<ReceptionResponse> {
         // 1. Verificar id
-        await this.getReceptionOrFail(id);
+        const reception = await this.getReceptionOrFail(id);
+        // 2. Validar mileageAtEntry si se está actualizando
+        if (data.mileageAtEntry !== undefined) {
+            await this.ensureMileageIsValid(
+                reception.vehicleId,
+                data.mileageAtEntry,
+            );
+        }
         // 2. Actualizar Receptione
         const updated = await this.receptionRepo.update(id, data);
         return receptionToResponseDTO(updated);
@@ -82,6 +96,18 @@ export class ReceptionService implements IReceptionService {
         if (!(await this.vehicleService.existsById(vehicleId))) {
             throw new NotFoundError(
                 'La reception con el vehicleId solicitado no existe',
+            );
+        }
+    }
+
+    private async ensureMileageIsValid(
+        vehicleId: number,
+        mileageAtEntry: number,
+    ): Promise<void> {
+        const vehicle = await this.vehicleService.getById(vehicleId);
+        if (mileageAtEntry < vehicle.mileage) {
+            throw new BusinessValidationError(
+                'El kilometraje de recepción no puede ser menor que el kilometraje de registro del vehículo',
             );
         }
     }

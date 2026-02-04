@@ -9,6 +9,10 @@ export const PhotoSchema = z
         checklistItemId: z.number().int().positive(),
         filename: z
             .string()
+            .regex(
+                /[^\s]+\.(jpg|jpeg|png|svg)$/,
+                '* filename debe ser una imagen válida (jpg, jpeg, png, svg)',
+            )
             .min(3, '* filename debe tener al menos 3 caracteres')
             .max(200, '* filename no debe exceder los 200 caracteres'),
         path: z
