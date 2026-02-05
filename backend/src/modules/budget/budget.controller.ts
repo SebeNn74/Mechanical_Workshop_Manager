@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { IBudgetService } from './budget.service.js';
 import { CreateBudgetInput, UpdateBudgetInput } from './budget.types.js';
-import { CreateBudgetItemInput } from './budget_item/budget_item.types.js';
+import {
+    CreateBudgetItemInput,
+    UpdateBudgetItemBulkInput,
+} from './budget_item/budget_item.types.js';
 
 export class BudgetController {
     constructor(private readonly budgetService: IBudgetService) {}
@@ -65,6 +68,21 @@ export class BudgetController {
             const data = (req as any).validatedBody as CreateBudgetItemInput;
             const newItem = await this.budgetService.addItem(data);
             return res.status(201).json(newItem);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    updateBulkItems = async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const data = (req as any)
+                .validatedBody as UpdateBudgetItemBulkInput;
+            const updatedItems = await this.budgetService.updateBulkItems(data);
+            return res.json(updatedItems);
         } catch (error) {
             next(error);
         }

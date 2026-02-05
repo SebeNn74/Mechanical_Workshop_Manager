@@ -9,7 +9,10 @@ import {
     UpdateBudgetDTO,
     BudgetFiltersDTO,
 } from './budget.types.js';
-import { CreateBudgetItemDTO } from './budget_item/budget_item.types.js';
+import {
+    CreateBudgetItemDTO,
+    UpdateBudgetItemBulkDTO,
+} from './budget_item/budget_item.types.js';
 
 const budgetRouter = Router();
 
@@ -43,6 +46,12 @@ budgetRouter.get(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     budgetController.getById,
+);
+
+budgetRouter.put(
+    '/items',
+    validateDTO(UpdateBudgetItemBulkDTO),
+    budgetController.updateBulkItems,
 );
 
 budgetRouter.put(

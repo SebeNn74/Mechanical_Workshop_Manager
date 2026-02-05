@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { IRepairService } from './repair.service.js';
 import { CreateRepairInput, UpdateRepairInput } from './repair.types.js';
-import { CreateRepairTaskInput } from './repair-task/repair-task.types.js';
+import {
+    CreateRepairTaskInput,
+    UpdateRepairTaskBulkInput,
+} from './repair-task/repair-task.types.js';
 
 export class RepairController {
     constructor(private readonly repairService: IRepairService) {}
@@ -65,6 +68,21 @@ export class RepairController {
             const data = (req as any).validatedBody as CreateRepairTaskInput;
             const newTask = await this.repairService.addTask(data);
             return res.status(201).json(newTask);
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    updateBulkTasks = async (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ) => {
+        try {
+            const data = (req as any)
+                .validatedBody as UpdateRepairTaskBulkInput;
+            const updatedTasks = await this.repairService.updateBulkTasks(data);
+            return res.json(updatedTasks);
         } catch (error) {
             next(error);
         }

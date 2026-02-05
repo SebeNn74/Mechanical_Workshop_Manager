@@ -13,6 +13,7 @@ import {
     CreateRepairTaskInput,
     RepairTask,
     RepairTaskResponse,
+    UpdateRepairTaskBulkInput,
 } from './repair-task/repair-task.types.js';
 
 import { NotFoundError } from '#/shared/errors/domain.error.js';
@@ -30,6 +31,9 @@ export interface IRepairService {
     delete(id: number): Promise<void>;
     getWithTasks(id: number): Promise<RepairWithTasks>;
     addTask(task: CreateRepairTaskInput): Promise<RepairTaskResponse>;
+    updateBulkTasks(
+        tasks: UpdateRepairTaskBulkInput,
+    ): Promise<RepairTaskResponse[]>;
     removeTask(taskId: number): Promise<void>;
     getRepairSummary(id: number): Promise<RepairDetailedResponse>;
 }
@@ -108,6 +112,16 @@ export class RepairService implements IRepairService {
         return await this.repairTaskService.add(task);
     }
 
+    async updateBulkTasks(
+        tasks: UpdateRepairTaskBulkInput,
+    ): Promise<RepairTaskResponse[]> {
+        // Los repairTasks no cambian de repair, solo se valida que existan
+        for (const item of tasks) {
+            await this.ensureRepairTaskExists(item.id);
+        }
+        return await this.repairTaskService.updateBulk(tasks);
+    }
+
     async removeTask(taskId: number): Promise<void> {
         await this.repairTaskService.delete(taskId);
     }
@@ -138,6 +152,14 @@ export class RepairService implements IRepairService {
         if (!(await this.receptionService.existsById(receptionId))) {
             throw new NotFoundError(
                 'El repair con el receptionId solicitado no existe',
+            );
+        }
+    }
+
+    private async ensureRepairTaskExists(repairTaskId: number): Promise<void> {
+        if (!(await this.repairTaskService.existsById(repairTaskId))) {
+            throw new NotFoundError(
+                'El repairTask con el id solicitado no existe',
             );
         }
     }

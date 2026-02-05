@@ -13,6 +13,7 @@ import {
     BudgetItem,
     BudgetItemResponse,
     CreateBudgetItemInput,
+    UpdateBudgetItemBulkInput,
 } from './budget_item/budget_item.types.js';
 
 import {
@@ -33,7 +34,9 @@ export interface IBudgetService {
     delete(id: number): Promise<void>;
     getWithItems(id: number): Promise<BudgetWithItems>;
     addItem(item: CreateBudgetItemInput): Promise<BudgetItemResponse>;
-
+    updateBulkItems(
+        items: UpdateBudgetItemBulkInput,
+    ): Promise<BudgetItemResponse[]>;
     removeItem(itemId: number): Promise<void>;
     getBudgetSummary(id: number): Promise<BudgetDetailedResponse>;
     validateBudgetForRepair(budgetId: number): Promise<boolean>;
@@ -116,6 +119,16 @@ export class BudgetService implements IBudgetService {
         return await this.budgetItemService.add(item);
     }
 
+    async updateBulkItems(
+        items: UpdateBudgetItemBulkInput,
+    ): Promise<BudgetItemResponse[]> {
+        // Los budgetItems no cambian de presupuesto, solo se valida que existan
+        for (const item of items) {
+            await this.ensureBudgetItemExists(item.id);
+        }
+        return await this.budgetItemService.updateBulk(items);
+    }
+
     async removeItem(itemId: number): Promise<void> {
         await this.budgetItemService.delete(itemId);
     }
@@ -168,6 +181,14 @@ export class BudgetService implements IBudgetService {
         if (!(await this.receptionService.existsById(receptionId))) {
             throw new NotFoundError(
                 'El budget con el receptionId solicitado no existe',
+            );
+        }
+    }
+
+    private async ensureBudgetItemExists(budgetItemId: number): Promise<void> {
+        if (!(await this.budgetItemService.existsById(budgetItemId))) {
+            throw new NotFoundError(
+                'El budgetItem con el id solicitado no existe',
             );
         }
     }

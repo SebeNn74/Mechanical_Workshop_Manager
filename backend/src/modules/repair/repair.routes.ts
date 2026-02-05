@@ -9,7 +9,10 @@ import {
     UpdateRepairDTO,
     RepairFiltersDTO,
 } from './repair.types.js';
-import { CreateRepairTaskDTO } from './repair-task/repair-task.types.js';
+import {
+    CreateRepairTaskDTO,
+    UpdateRepairTaskBulkDTO,
+} from './repair-task/repair-task.types.js';
 
 const repairRouter = Router();
 
@@ -43,6 +46,12 @@ repairRouter.get(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     repairController.getById,
+);
+
+repairRouter.put(
+    '/items',
+    validateDTO(UpdateRepairTaskBulkDTO),
+    repairController.updateBulkTasks,
 );
 
 repairRouter.put(
