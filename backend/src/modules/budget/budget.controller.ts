@@ -57,7 +57,9 @@ export class BudgetController {
         }
     };
 
-    //* Endpoint to manage BudgetItems
+    //* Endpoints to manage BudgetItems
+    //* -----------------------------
+
     addItem = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = (req as any).validatedBody as CreateBudgetItemInput;

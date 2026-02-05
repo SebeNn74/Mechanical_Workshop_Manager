@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { RepairTaskSchema } from './repair-task/repair-task.types.js';
 
 // Repair Base Schemas
 //* -----------------------------
@@ -9,8 +10,8 @@ export const RepairSchema = z
         receptionId: z.number().int().positive(),
         repairNumber: z
             .string()
-            .min(6, '* repairNumber debe tener al menos 3 caracteres')
-            .max(20, '* repairNumber no debe exceder los 20 caracteres'),
+            .min(10, '* repairNumber debe tener al menos 10 caracteres')
+            .max(14, '* repairNumber no debe exceder los 14 caracteres'),
         startDate: z.coerce.date(),
         endDate: z.coerce.date().nullable(),
         notes: z
@@ -26,7 +27,11 @@ export const RepairSchema = z
 // Create
 export const CreateRepairDTO = RepairSchema.omit({
     id: true,
-}).strict();
+})
+    .extend({
+        budgetId: z.number().int().positive(),
+    })
+    .strict();
 
 // Update
 export const UpdateRepairDTO = RepairSchema.omit({
@@ -37,6 +42,15 @@ export const UpdateRepairDTO = RepairSchema.omit({
 
 // Responses
 export const RepairResponseDTO = RepairSchema.strict();
+
+export const RepairWithTasksDTO = RepairSchema.extend({
+    tasks: z.array(RepairTaskSchema),
+}).strict();
+
+export const RepairDetailedResponseDTO = RepairSchema.extend({
+    tasks: z.array(RepairTaskSchema),
+    totalCost: z.number().int().positive(),
+}).strict();
 
 // Filters
 export const RepairFiltersDTO = z
@@ -53,6 +67,8 @@ export type Repair = z.infer<typeof RepairSchema>;
 export type CreateRepairInput = z.infer<typeof CreateRepairDTO>;
 export type UpdateRepairInput = z.infer<typeof UpdateRepairDTO>;
 export type RepairResponse = z.infer<typeof RepairResponseDTO>;
+export type RepairWithTasks = z.infer<typeof RepairWithTasksDTO>;
+export type RepairDetailedResponse = z.infer<typeof RepairDetailedResponseDTO>;
 export type RepairFilters = z.infer<typeof RepairFiltersDTO>;
 
 // Repair To DTOs

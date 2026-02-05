@@ -9,34 +9,59 @@ import {
     UpdateRepairDTO,
     RepairFiltersDTO,
 } from './repair.types.js';
+import { CreateRepairTaskDTO } from './repair-task/repair-task.types.js';
 
-const RepairRouter = Router();
+const repairRouter = Router();
 
-RepairRouter.post('/', validateDTO(CreateRepairDTO), repairController.add);
+repairRouter.post('/', validateDTO(CreateRepairDTO), repairController.add);
 
-RepairRouter.get(
+repairRouter.post(
+    '/tasks',
+    validateDTO(CreateRepairTaskDTO),
+    repairController.addTask,
+);
+
+repairRouter.get(
     '/',
     validateDTO(RepairFiltersDTO, 'query'),
     repairController.getAll,
 );
 
-RepairRouter.get(
+repairRouter.get(
+    '/:id/tasks',
+    validateDTO(ParamIdDTO, 'params'),
+    repairController.getRepairWithTasks,
+);
+
+repairRouter.get(
+    '/:id/summary',
+    validateDTO(ParamIdDTO, 'params'),
+    repairController.getRepairSummary,
+);
+
+repairRouter.get(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     repairController.getById,
 );
 
-RepairRouter.put(
+repairRouter.put(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     validateDTO(UpdateRepairDTO),
     repairController.update,
 );
 
-RepairRouter.delete(
+repairRouter.delete(
+    '/tasks/:id',
+    validateDTO(ParamIdDTO, 'params'),
+    repairController.removeTask,
+);
+
+repairRouter.delete(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     repairController.delete,
 );
 
-export default RepairRouter;
+export default repairRouter;

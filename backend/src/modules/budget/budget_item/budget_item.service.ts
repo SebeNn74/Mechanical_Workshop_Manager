@@ -7,15 +7,17 @@ import {
     budgetItemToResponseDTO,
     budgetItemsToArrayResDTO,
     CreateBudgetItemBulkInput,
+    UpdateBudgetItemBulkInput,
 } from './budget_item.types.js';
 
-import { IBudgetItemRepository } from './budget_item.repository.js';
 import { NotFoundError } from '#/shared/errors/domain.error.js';
+import { IBudgetItemRepository } from './budget_item.repository.js';
 import { IBudgetService } from '../budget.service.js';
 import { ChecklistItem } from '#/modules/checklist/checklist_item.types.js';
 
 export interface IBudgetItemService {
     add(budget: CreateBudgetItemInput): Promise<BudgetItemResponse>;
+    addBulk(items: CreateBudgetItemBulkInput): Promise<BudgetItemResponse[]>;
     existsById(id: number): Promise<boolean>;
     getById(id: number): Promise<BudgetItemResponse>;
     getAll(filters: BudgetItemFilters): Promise<BudgetItemResponse[]>;
@@ -23,6 +25,7 @@ export interface IBudgetItemService {
         id: number,
         data: UpdateBudgetItemInput,
     ): Promise<BudgetItemResponse>;
+    updateBulk(items: UpdateBudgetItemBulkInput): Promise<BudgetItemResponse[]>;
     delete(id: number): Promise<void>;
     deleteByBudgetId(budgetId: number): Promise<number>;
     createFromChecklistItems(
@@ -40,6 +43,9 @@ export class BudgetItemService implements IBudgetItemService {
         this.budgetService = budget;
     }
 
+    //* Simple CRUD methods
+    //* -----------------------------
+
     async add(budgetItem: CreateBudgetItemInput): Promise<BudgetItemResponse> {
         // Crear BudgetItem
         const newBudgetItem = await this.budgetItemRepo.create(budgetItem);
@@ -54,7 +60,6 @@ export class BudgetItemService implements IBudgetItemService {
         for (const budgetItemId of budgetItemIds) {
             await this.ensureBudgetExists(budgetItemId);
         }
-
         // 2. Crear todos los BudgetItems
         const createdBudgetItems = await this.budgetItemRepo.createBulk(items);
         return budgetItemsToArrayResDTO(createdBudgetItems);
@@ -84,6 +89,14 @@ export class BudgetItemService implements IBudgetItemService {
         // 2. Actualizar BudgetItem
         const updated = await this.budgetItemRepo.update(id, data);
         return budgetItemToResponseDTO(updated);
+    }
+
+    async updateBulk(
+        items: UpdateBudgetItemBulkInput,
+    ): Promise<BudgetItemResponse[]> {
+        // No hace falta validar los budgetIds ya que no son actualizables
+        const updatedBudgetItems = await this.budgetItemRepo.updateBulk(items);
+        return budgetItemsToArrayResDTO(updatedBudgetItems);
     }
 
     async delete(id: number): Promise<void> {
@@ -139,7 +152,6 @@ export class BudgetItemService implements IBudgetItemService {
                 'BudgetService no ha sido inicializado en BudgetItemService',
             );
         }
-
         if (!(await this.budgetService.existsById(budgetId))) {
             throw new NotFoundError(
                 'El BudgetItem con el id solicitado no existe',

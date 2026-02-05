@@ -9,8 +9,8 @@ export const ReceptionSchema = z
         vehicleId: z.number().int().positive(),
         receptionNumber: z
             .string()
-            .min(6, '* receptionNumber debe tener al menos 3 caracteres')
-            .max(20, '* receptionNumber no debe exceder los 20 caracteres'),
+            .min(10, '* receptionNumber debe tener al menos 10 caracteres')
+            .max(14, '* receptionNumber no debe exceder los 14 caracteres'),
         dateTime: z.coerce.date(),
         mileageAtEntry: z.number().int().positive(),
         notes: z

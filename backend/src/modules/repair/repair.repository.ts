@@ -1,4 +1,5 @@
 import prisma from '#/config/prisma.js';
+import { generateMonthlyCode } from '#/shared/utils/code.generator.js';
 import {
     Repair,
     CreateRepairInput,
@@ -17,7 +18,14 @@ export interface IRepairRepository {
 
 export class RepairRepository implements IRepairRepository {
     async create(data: CreateRepairInput): Promise<Repair> {
-        return await prisma.repair.create({ data });
+        const repairNumber = await generateMonthlyCode({
+            prefix: 'REP',
+            tableName: 'repair',
+            fieldName: 'repairNumber',
+        });
+        return await prisma.repair.create({
+            data: { ...data, repairNumber },
+        });
     }
 
     async existsById(id: number): Promise<boolean> {

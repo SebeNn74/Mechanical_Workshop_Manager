@@ -12,8 +12,8 @@ export const BudgetSchema = z
         receptionId: z.number().int().positive(),
         budgetNumber: z
             .string()
-            .min(6, '* budgetNumber debe tener al menos 3 caracteres')
-            .max(20, '* budgetNumber no debe exceder los 20 caracteres'),
+            .min(10, '* budgetNumber debe tener al menos 10 caracteres')
+            .max(14, '* budgetNumber no debe exceder los 14 caracteres'),
         status: BudgetStatus,
         createdAt: z.coerce.date(),
         approvedAt: z.coerce.date().nullable(),

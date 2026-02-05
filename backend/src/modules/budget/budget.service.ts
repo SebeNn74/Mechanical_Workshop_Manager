@@ -9,19 +9,19 @@ import {
     BudgetWithItems,
     BudgetDetailedResponse,
 } from './budget.types.js';
-
-import { IBudgetRepository } from './budget.repository.js';
-import {
-    BusinessValidationError,
-    NotFoundError,
-} from '#/shared/errors/domain.error.js';
-import { IReceptionService } from '../reception/reception.service.js';
-import { IBudgetItemService } from './budget_item/budget_item.service.js';
 import {
     BudgetItem,
     BudgetItemResponse,
     CreateBudgetItemInput,
 } from './budget_item/budget_item.types.js';
+
+import {
+    BusinessValidationError,
+    NotFoundError,
+} from '#/shared/errors/domain.error.js';
+import { IBudgetRepository } from './budget.repository.js';
+import { IReceptionService } from '../reception/reception.service.js';
+import { IBudgetItemService } from './budget_item/budget_item.service.js';
 import { IChecklistItService } from '../checklist/checklist_item.service.js';
 
 export interface IBudgetService {
@@ -33,8 +33,10 @@ export interface IBudgetService {
     delete(id: number): Promise<void>;
     getWithItems(id: number): Promise<BudgetWithItems>;
     addItem(item: CreateBudgetItemInput): Promise<BudgetItemResponse>;
+
     removeItem(itemId: number): Promise<void>;
     getBudgetSummary(id: number): Promise<BudgetDetailedResponse>;
+    validateBudgetForRepair(budgetId: number): Promise<boolean>;
 }
 
 export class BudgetService implements IBudgetService {

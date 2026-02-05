@@ -8,11 +8,11 @@ import {
     receptionsToArrayResDTO,
 } from './reception.types.js';
 
-import { IReceptionRepository } from './reception.repository.js';
 import {
     BusinessValidationError,
     NotFoundError,
 } from '#/shared/errors/domain.error.js';
+import { IReceptionRepository } from './reception.repository.js';
 import { IVehicleService } from '../vehicle/vehicle.service.js';
 
 export interface IReceptionService {
@@ -82,6 +82,9 @@ export class ReceptionService implements IReceptionService {
         // 2. Eliminar Reception
         await this.receptionRepo.delete(id);
     }
+
+    //* Private methods
+    //* -----------------------------
 
     private async getReceptionOrFail(id: number): Promise<Reception> {
         const reception = await this.receptionRepo.findById(id);

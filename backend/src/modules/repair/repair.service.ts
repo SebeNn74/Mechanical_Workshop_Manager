@@ -6,20 +6,32 @@ import {
     RepairFilters,
     repairToResponseDTO,
     repairsToArrayResDTO,
+    RepairWithTasks,
+    RepairDetailedResponse,
 } from './repair.types.js';
+import {
+    CreateRepairTaskInput,
+    RepairTask,
+    RepairTaskResponse,
+} from './repair-task/repair-task.types.js';
 
-import { IRepairRepository } from './repair.repository.js';
 import { NotFoundError } from '#/shared/errors/domain.error.js';
+import { IRepairRepository } from './repair.repository.js';
 import { IReceptionService } from '../reception/reception.service.js';
 import { IRepairTaskService } from './repair-task/repair-task.service.js';
+import { IBudgetService } from '../budget/budget.service.js';
 
 export interface IRepairService {
-    add(Repair: CreateRepairInput): Promise<RepairResponse>;
+    add(Repair: CreateRepairInput): Promise<RepairWithTasks>;
     existsById(id: number): Promise<boolean>;
     getById(id: number): Promise<RepairResponse>;
     getAll(filters: RepairFilters): Promise<RepairResponse[]>;
     update(id: number, data: UpdateRepairInput): Promise<RepairResponse>;
     delete(id: number): Promise<void>;
+    getWithTasks(id: number): Promise<RepairWithTasks>;
+    addTask(task: CreateRepairTaskInput): Promise<RepairTaskResponse>;
+    removeTask(taskId: number): Promise<void>;
+    getRepairSummary(id: number): Promise<RepairDetailedResponse>;
 }
 
 export class RepairService implements IRepairService {
@@ -27,14 +39,30 @@ export class RepairService implements IRepairService {
         private readonly repairRepo: IRepairRepository,
         private readonly receptionService: IReceptionService,
         private readonly repairTaskService: IRepairTaskService,
+        private readonly budgetService: IBudgetService,
     ) {}
 
-    async add(repair: CreateRepairInput): Promise<RepairResponse> {
+    //* Simple CRUD methods
+    //* -----------------------------
+
+    async add(repair: CreateRepairInput): Promise<RepairWithTasks> {
         // 1. Validar existencia de reception
         await this.ensureReceptionExists(repair.receptionId);
-        // 2. Crear Repair
+        // 2. Validar que el presupuesto es apto para Repair
+        await this.budgetService.validateBudgetForRepair(repair.budgetId);
+        // 3. Crear Repair
         const newRepair = await this.repairRepo.create(repair);
-        return repairToResponseDTO(newRepair);
+        // 4. Obtener BudgetItems del Budget asociado
+        const budgetWithItems = await this.budgetService.getWithItems(
+            repair.budgetId,
+        );
+        // 5. Generar RepairTasks automáticamente a partir de los BudgetItems
+        const tasks = await this.repairTaskService.createFromBudgetItems(
+            newRepair.id,
+            budgetWithItems.items,
+        );
+        // 6. Retornar el Repair con Items
+        return { ...newRepair, tasks: tasks };
     }
 
     async existsById(id: number): Promise<boolean> {
@@ -65,6 +93,40 @@ export class RepairService implements IRepairService {
         await this.repairRepo.delete(id);
     }
 
+    //* Operations with RepairTasks
+    //* -----------------------------
+    async getWithTasks(id: number): Promise<RepairWithTasks> {
+        const repair = await this.getRepairOrFail(id);
+        const tasks = await this.repairTaskService.getAll({ repairId: id });
+        return { ...repair, tasks };
+    }
+
+    async addTask(task: CreateRepairTaskInput): Promise<RepairTaskResponse> {
+        // Validar que el repair existe
+        await this.getRepairOrFail(task.repairId);
+        // Crear task con el repairId
+        return await this.repairTaskService.add(task);
+    }
+
+    async removeTask(taskId: number): Promise<void> {
+        await this.repairTaskService.delete(taskId);
+    }
+
+    async getRepairSummary(id: number): Promise<RepairDetailedResponse> {
+        const repair = await this.getRepairOrFail(id);
+        const tasks = await this.repairTaskService.getAll({ repairId: id });
+        const totalCost = this.calculateRepairTotal(tasks);
+
+        return {
+            ...repair,
+            tasks,
+            totalCost,
+        };
+    }
+
+    //* Private methods
+    //* -----------------------------
+
     private async getRepairOrFail(id: number): Promise<Repair> {
         const repair = await this.repairRepo.findById(id);
         if (!repair)
@@ -78,5 +140,9 @@ export class RepairService implements IRepairService {
                 'El repair con el receptionId solicitado no existe',
             );
         }
+    }
+
+    private calculateRepairTotal(tasks: RepairTask[]): number {
+        return tasks.reduce((sum, task) => sum + task.finalPrice, 0);
     }
 }

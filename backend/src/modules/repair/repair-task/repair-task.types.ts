@@ -27,12 +27,30 @@ export const CreateRepairTaskDTO = RepairTaskSchema.omit({
 // Update
 export const UpdateRepairTaskDTO = RepairTaskSchema.omit({
     id: true,
+    repairId: true,
+    budgetItemId: true,
 })
     .partial()
     .strict();
 
 // Responses
 export const RepairTaskResponseDTO = RepairTaskSchema.strict();
+
+// Bulk Operations
+// Bulk Create
+export const CreateRepairTaskBulkDTO = z.array(CreateRepairTaskDTO).min(1);
+
+// Bulk Update
+export const UpdateRepairTaskBulkItDTO = z
+    .object({
+        id: z.number().int().positive(),
+        data: UpdateRepairTaskDTO,
+    })
+    .strict();
+
+export const UpdateRepairTaskBulkDTO = z
+    .array(UpdateRepairTaskBulkItDTO)
+    .min(1);
 
 // Filters
 export const RepairTaskFiltersDTO = z
@@ -48,6 +66,13 @@ export type CreateRepairTaskInput = z.infer<typeof CreateRepairTaskDTO>;
 export type UpdateRepairTaskInput = z.infer<typeof UpdateRepairTaskDTO>;
 export type RepairTaskResponse = z.infer<typeof RepairTaskResponseDTO>;
 export type RepairTaskFilters = z.infer<typeof RepairTaskFiltersDTO>;
+
+// Bulk Types
+export type CreateRepairTaskBulkInput = z.infer<typeof CreateRepairTaskBulkDTO>;
+export type UpdateRepairTaskBulkItem = z.infer<
+    typeof UpdateRepairTaskBulkItDTO
+>;
+export type UpdateRepairTaskBulkInput = z.infer<typeof UpdateRepairTaskBulkDTO>;
 
 // RepairTask To DTOs
 //* -----------------------------

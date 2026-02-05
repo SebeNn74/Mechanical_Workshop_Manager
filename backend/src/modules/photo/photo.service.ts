@@ -35,6 +35,9 @@ export class PhotoService implements IPhotoService {
         this.checklistItService = service;
     }
 
+    //* Simple CRUD methods
+    //* -----------------------------
+
     async add(photo: CreatePhotoInput): Promise<PhotoResponse> {
         // 1. Validar que el ChecklistItem exista
         await this.ensureChecklistItemExists(photo.checklistItemId);
@@ -113,6 +116,9 @@ export class PhotoService implements IPhotoService {
         await this.ensureChecklistItemExists(checklistItemId);
         return await this.photoRepo.deleteByChecklistItemId(checklistItemId);
     }
+
+    //* Private methods
+    //* -----------------------------
 
     private async getPhotoOrFail(id: number): Promise<Photo> {
         const photo = await this.photoRepo.findById(id);
