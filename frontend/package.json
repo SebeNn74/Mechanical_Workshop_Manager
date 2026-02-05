@@ -1,0 +1,41 @@
+{
+  "name": "tauri-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Mechanical Workshop Manager Frontend",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "jspdf": "4.1.0",
+    "html2canvas": "^1.4.x"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.4",
+    "vite-plugin-svgr": "^4.5.0",
+    "@tauri-apps/cli": "^2"
+  }
+}
