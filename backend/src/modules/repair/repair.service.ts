@@ -52,20 +52,31 @@ export class RepairService implements IRepairService {
     async add(repair: CreateRepairInput): Promise<RepairWithTasks> {
         // 1. Validar existencia de reception
         await this.ensureReceptionExists(repair.receptionId);
-        // 2. Validar que el presupuesto es apto para Repair
-        await this.budgetService.validateBudgetForRepair(repair.budgetId);
-        // 3. Crear Repair
-        const newRepair = await this.repairRepo.create(repair);
-        // 4. Obtener BudgetItems del Budget asociado
-        const budgetWithItems = await this.budgetService.getWithItems(
-            repair.budgetId,
+        // 2. Validar que no exista ya un Repair para esa Reception
+        await this.validateRepairNotExistsForReception(repair.receptionId);
+        // 3. Validar que el presupuesto es apto para Repair
+        const budget = await this.budgetService.getByReceptionId(
+            repair.receptionId,
         );
-        // 5. Generar RepairTasks automáticamente a partir de los BudgetItems
+        await this.budgetService.validateBudgetForRepair(budget.id);
+        // 4. Validar fechas
+        await this.validateRepairDates(
+            repair.receptionId,
+            repair.startDate,
+            repair.endDate,
+        );
+        // 5. Crear Repair
+        const newRepair = await this.repairRepo.create(repair);
+        // 6. Obtener BudgetItems del Budget asociado
+        const budgetWithItems = await this.budgetService.getWithItems(
+            budget.id,
+        );
+        // 7. Generar RepairTasks automáticamente a partir de los BudgetItems
         const tasks = await this.repairTaskService.createFromBudgetItems(
             newRepair.id,
             budgetWithItems.items,
         );
-        // 6. Retornar el Repair con Items
+        // 8. Retornar el Repair con Items
         return { ...newRepair, tasks: tasks };
     }
 
@@ -84,7 +95,13 @@ export class RepairService implements IRepairService {
 
     async update(id: number, data: UpdateRepairInput): Promise<RepairResponse> {
         // 1. Verificar id
-        await this.getRepairOrFail(id);
+        const repair = await this.getRepairOrFail(id);
+        // 2. Validar fechas si se están actualizando
+        await this.validateRepairDates(
+            repair.receptionId,
+            data.startDate ?? repair.startDate,
+            data.endDate ?? repair.endDate,
+        );
         // 2. Actualizar Repair
         const updated = await this.repairRepo.update(id, data);
         return repairToResponseDTO(updated);
@@ -160,6 +177,48 @@ export class RepairService implements IRepairService {
         if (!(await this.repairTaskService.existsById(repairTaskId))) {
             throw new NotFoundError(
                 'El repairTask con el id solicitado no existe',
+            );
+        }
+    }
+
+    private async validateRepairNotExistsForReception(
+        receptionId: number,
+    ): Promise<void> {
+        if (await this.repairRepo.existsByReceptionId(receptionId)) {
+            throw new Error(
+                'Ya existe un repair asociado a la recepción indicada',
+            );
+        }
+    }
+
+    private async validateRepairDates(
+        receptionId: number,
+        startDate: Date,
+        endDate: Date | null,
+    ): Promise<void> {
+        await this.ensureStartDateAfterReception(receptionId, startDate);
+        this.ensureStartDateBeforeEndDate(startDate, endDate);
+    }
+
+    private async ensureStartDateAfterReception(
+        receptionId: number,
+        startDate: Date,
+    ): Promise<void> {
+        const reception = await this.receptionService.getById(receptionId);
+        if (startDate < reception.dateTime) {
+            throw new Error(
+                'La fecha de inicio del repair no puede ser anterior a la fecha de la recepción',
+            );
+        }
+    }
+
+    private ensureStartDateBeforeEndDate(
+        startDate: Date,
+        endDate: Date | null,
+    ): void {
+        if (endDate && startDate > endDate) {
+            throw new Error(
+                'La fecha de inicio del repair no puede ser posterior a la fecha de fin',
             );
         }
     }

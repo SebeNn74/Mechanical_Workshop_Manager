@@ -29,6 +29,7 @@ export interface IBudgetService {
     add(budget: CreateBudgetInput): Promise<BudgetWithItems>;
     existsById(id: number): Promise<boolean>;
     getById(id: number): Promise<BudgetResponse>;
+    getByReceptionId(receptionId: number): Promise<BudgetResponse>;
     getAll(filters: BudgetFilters): Promise<BudgetResponse[]>;
     update(id: number, data: UpdateBudgetInput): Promise<BudgetResponse>;
     delete(id: number): Promise<void>;
@@ -56,6 +57,8 @@ export class BudgetService implements IBudgetService {
     async add(budget: CreateBudgetInput): Promise<BudgetWithItems> {
         // 1. Validar existencia de reception
         await this.ensureReceptionExists(budget.receptionId);
+        // 2. Validar que no exista ya un Budget para esa Reception
+        await this.validateBudgetNotExistsForReception(budget.receptionId);
         // 2. Crear Budget
         const newBudget = await this.budgetRepo.create(budget);
         // 3. Obtener ChecklistItems de la Reception
@@ -78,6 +81,15 @@ export class BudgetService implements IBudgetService {
 
     async getById(id: number): Promise<BudgetResponse> {
         const budget = await this.getBudgetOrFail(id);
+        return budgetToResponseDTO(budget);
+    }
+
+    async getByReceptionId(receptionId: number): Promise<BudgetResponse> {
+        const budget = await this.budgetRepo.findByReceptionId(receptionId);
+        if (!budget)
+            throw new NotFoundError(
+                'El budget con el receptionId solicitado no existe',
+            );
         return budgetToResponseDTO(budget);
     }
 
@@ -189,6 +201,16 @@ export class BudgetService implements IBudgetService {
         if (!(await this.budgetItemService.existsById(budgetItemId))) {
             throw new NotFoundError(
                 'El budgetItem con el id solicitado no existe',
+            );
+        }
+    }
+
+    private async validateBudgetNotExistsForReception(
+        receptionId: number,
+    ): Promise<void> {
+        if (await this.budgetRepo.existsByReceptionId(receptionId)) {
+            throw new Error(
+                'Ya existe un budget asociado a la recepción indicada',
             );
         }
     }

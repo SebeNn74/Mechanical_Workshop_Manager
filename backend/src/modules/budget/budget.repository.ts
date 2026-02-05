@@ -10,7 +10,9 @@ import {
 export interface IBudgetRepository {
     create(data: CreateBudgetInput): Promise<Budget>;
     existsById(id: number): Promise<boolean>;
+    existsByReceptionId(receptionId: number): Promise<boolean>;
     findById(id: number): Promise<Budget | null>;
+    findByReceptionId(receptionId: number): Promise<Budget | null>;
     findAll(filters: BudgetFilters): Promise<Budget[]>;
     update(id: number, data: UpdateBudgetInput): Promise<Budget>;
     delete(id: number): Promise<Budget>;
@@ -36,9 +38,23 @@ export class BudgetRepository implements IBudgetRepository {
         return !!exists;
     }
 
+    async existsByReceptionId(receptionId: number): Promise<boolean> {
+        const exists = await prisma.budget.findUnique({
+            where: { receptionId },
+            select: { id: true },
+        });
+        return !!exists;
+    }
+
     async findById(id: number): Promise<Budget | null> {
         return await prisma.budget.findUnique({
             where: { id },
+        });
+    }
+
+    async findByReceptionId(receptionId: number): Promise<Budget | null> {
+        return await prisma.budget.findUnique({
+            where: { receptionId },
         });
     }
 
@@ -49,6 +65,18 @@ export class BudgetRepository implements IBudgetRepository {
     }
 
     async update(id: number, data: UpdateBudgetInput): Promise<Budget> {
+        if (data.status === 'APPROVED') {
+            return await prisma.budget.update({
+                where: { id },
+                data: { ...data, approvedAt: new Date() },
+            });
+        }
+        if (data.status === 'REJECTED') {
+            return await prisma.budget.update({
+                where: { id },
+                data: { ...data, approvedAt: null },
+            });
+        }
         return await prisma.budget.update({
             where: { id },
             data,

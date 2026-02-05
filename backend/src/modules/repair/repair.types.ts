@@ -27,15 +27,14 @@ export const RepairSchema = z
 // Create
 export const CreateRepairDTO = RepairSchema.omit({
     id: true,
-})
-    .extend({
-        budgetId: z.number().int().positive(),
-    })
-    .strict();
+    repairNumber: true,
+}).strict();
 
 // Update
 export const UpdateRepairDTO = RepairSchema.omit({
     id: true,
+    receptionId: true,
+    repairNumber: true,
 })
     .partial()
     .strict();

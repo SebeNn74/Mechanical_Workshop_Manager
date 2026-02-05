@@ -10,6 +10,7 @@ import {
 export interface IRepairRepository {
     create(data: CreateRepairInput): Promise<Repair>;
     existsById(id: number): Promise<boolean>;
+    existsByReceptionId(receptionId: number): Promise<boolean>;
     findById(id: number): Promise<Repair | null>;
     findAll(filters: RepairFilters): Promise<Repair[]>;
     update(id: number, data: UpdateRepairInput): Promise<Repair>;
@@ -31,6 +32,14 @@ export class RepairRepository implements IRepairRepository {
     async existsById(id: number): Promise<boolean> {
         const exists = await prisma.repair.findUnique({
             where: { id },
+            select: { id: true },
+        });
+        return !!exists;
+    }
+
+    async existsByReceptionId(receptionId: number): Promise<boolean> {
+        const exists = await prisma.repair.findUnique({
+            where: { receptionId },
             select: { id: true },
         });
         return !!exists;

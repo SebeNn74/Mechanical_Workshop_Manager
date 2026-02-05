@@ -90,8 +90,8 @@ export class BudgetController {
 
     removeItem = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { itemId } = (req as any).validatedParams;
-            await this.budgetService.removeItem(itemId);
+            const { id } = (req as any).validatedParams;
+            await this.budgetService.removeItem(id);
             return res.json({ message: 'Item removido del presupuesto' });
         } catch (error) {
             next(error);

@@ -90,8 +90,8 @@ export class RepairController {
 
     removeTask = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { taskId } = (req as any).validatedParams;
-            await this.repairService.removeTask(taskId);
+            const { id } = (req as any).validatedParams;
+            await this.repairService.removeTask(id);
             return res.json({ message: 'Task removido de la reparación' });
         } catch (error) {
             next(error);

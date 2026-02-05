@@ -28,9 +28,8 @@ export const CreateBudgetDTO = BudgetSchema.pick({
 }).strict();
 
 // Update
-export const UpdateBudgetDTO = BudgetSchema.omit({
-    id: true,
-    createdAt: true,
+export const UpdateBudgetDTO = BudgetSchema.pick({
+    status: true,
 })
     .partial()
     .strict();

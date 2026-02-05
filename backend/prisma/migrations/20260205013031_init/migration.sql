@@ -88,7 +88,7 @@ CREATE TABLE "BudgetItem" (
     "description" TEXT NOT NULL,
     "estimatedPrice" INTEGER NOT NULL,
     "budgetId" INTEGER NOT NULL,
-    CONSTRAINT "BudgetItem_budgetId_fkey" FOREIGN KEY ("budgetId") REFERENCES "Budget" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "BudgetItem_budgetId_fkey" FOREIGN KEY ("budgetId") REFERENCES "Budget" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -110,7 +110,7 @@ CREATE TABLE "RepairTask" (
     "repairId" INTEGER NOT NULL,
     "budgetItemId" INTEGER NOT NULL,
     CONSTRAINT "RepairTask_repairId_fkey" FOREIGN KEY ("repairId") REFERENCES "Repair" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "RepairTask_budgetItemId_fkey" FOREIGN KEY ("budgetItemId") REFERENCES "BudgetItem" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "RepairTask_budgetItemId_fkey" FOREIGN KEY ("budgetItemId") REFERENCES "BudgetItem" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex

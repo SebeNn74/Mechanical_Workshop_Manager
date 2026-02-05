@@ -49,7 +49,7 @@ repairRouter.get(
 );
 
 repairRouter.put(
-    '/items',
+    '/tasks',
     validateDTO(UpdateRepairTaskBulkDTO),
     repairController.updateBulkTasks,
 );
