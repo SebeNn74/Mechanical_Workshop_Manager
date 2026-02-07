@@ -15,3 +15,10 @@ declare module '*.svg' {
   export default src;
 }
 
+declare module '*.svg?react' {
+  import * as React from 'react';
+  export const ReactComponent: React.VFC<React.SVGProps<SVGSVGElement>>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const src: string;
+  export default ReactComponent;
+}

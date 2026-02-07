@@ -7,53 +7,53 @@ export const BudgetStatus = z.enum(['PENDING', 'APPROVED', 'REJECTED']);
 
 // Base
 export const BudgetSchema = z
-    .object({
-        id: z.number().int().positive(),
-        receptionId: z.number().int().positive(),
-        budgetNumber: z
-            .string()
-            .min(10, '* budgetNumber debe tener al menos 10 caracteres')
-            .max(14, '* budgetNumber no debe exceder los 14 caracteres'),
-        status: BudgetStatus,
-        createdAt: z.coerce.date(),
-        approvedAt: z.coerce.date().nullable(),
-    })
-    .strict();
+  .object({
+    id: z.number().int().positive(),
+    receptionId: z.number().int().positive(),
+    budgetNumber: z
+      .string()
+      .min(10, '* budgetNumber debe tener al menos 10 caracteres')
+      .max(14, '* budgetNumber no debe exceder los 14 caracteres'),
+    status: BudgetStatus,
+    createdAt: z.coerce.date(),
+    approvedAt: z.coerce.date().nullable(),
+  })
+  .strict();
 
 // DTOs
 //* -----------------------------
 // Create
 export const CreateBudgetDTO = BudgetSchema.pick({
-    receptionId: true,
+  receptionId: true,
 }).strict();
 
 // Update
 export const UpdateBudgetDTO = BudgetSchema.pick({
-    status: true,
+  status: true,
 })
-    .partial()
-    .strict();
+  .partial()
+  .strict();
 
 // Responses
 export const BudgetResponseDTO = BudgetSchema.strict();
 
 export const BudgetWithItemsDTO = BudgetSchema.extend({
-    items: z.array(BudgetItemSchema),
+  items: z.array(BudgetItemSchema),
 }).strict();
 
 export const BudgetDetailedResponseDTO = BudgetSchema.extend({
-    items: z.array(BudgetItemSchema),
-    totalEstimated: z.number().int().positive(),
+  items: z.array(BudgetItemSchema),
+  totalEstimated: z.number().int().positive(),
 }).strict();
 
 // Filters
 export const BudgetFiltersDTO = z
-    .object({
-        receptionId: z.coerce.number().int().positive().optional(),
-        budgetNumber: z.coerce.string().optional(),
-        createdAt: z.coerce.date().optional(),
-    })
-    .strict();
+  .object({
+    receptionId: z.coerce.number().int().positive().optional(),
+    budgetNumber: z.coerce.string().optional(),
+    createdAt: z.coerce.date().optional(),
+  })
+  .strict();
 
 // Types
 //* -----------------------------
@@ -68,9 +68,9 @@ export type BudgetFilters = z.infer<typeof BudgetFiltersDTO>;
 // Budget To DTOs
 //* -----------------------------
 export const budgetToResponseDTO = (budget: Budget): BudgetResponse => {
-    return BudgetResponseDTO.parse(budget);
+  return BudgetResponseDTO.parse(budget);
 };
 
 export const budgetsToArrayResDTO = (budgets: Budget[]): BudgetResponse[] => {
-    return budgets.map(budgetToResponseDTO);
+  return budgets.map(budgetToResponseDTO);
 };
