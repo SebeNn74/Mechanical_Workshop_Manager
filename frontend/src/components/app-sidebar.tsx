@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Sidebar,
   SidebarContent,
@@ -16,60 +16,56 @@ import Checklists from '@/assets/list-todo.svg?react';
 import Budgets from '@/assets/circle-dollar-sign.svg?react';
 import Repairs from '@/assets/toolbox.svg?react';
 
-interface SidebarProps {
-  onNavigate: (itemId: string) => void;
-}
-
 interface SidebarItem {
   id: string;
   label: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  href?: string;
-  isActive?: boolean;
+  href: string;
 }
 
 const items: SidebarItem[] = [
-  { id: 'home', label: 'Inicio', icon: Home },
-  { id: 'clients', label: 'Clientes', icon: Clients },
-  { id: 'vehicles', label: 'Vehículos', icon: Vehicles },
-  { id: 'receptions', label: 'Recepciones', icon: Receptions },
-  { id: 'checklists', label: 'Checklists', icon: Checklists },
-  { id: 'budgets', label: 'Presupuestos', icon: Budgets },
-  { id: 'repairs', label: 'Reparaciones', icon: Repairs },
+  { id: 'home', label: 'Inicio', icon: Home, href: '/' },
+  { id: 'clients', label: 'Clientes', icon: Clients, href: '/clients' },
+  { id: 'vehicles', label: 'Vehículos', icon: Vehicles, href: '/vehicles' },
+  { id: 'receptions', label: 'Recepciones', icon: Receptions, href: '/receptions' },
+  { id: 'checklists', label: 'Checklists', icon: Checklists, href: '/checklists' },
+  { id: 'budgets', label: 'Presupuestos', icon: Budgets, href: '/budgets' },
+  { id: 'repairs', label: 'Reparaciones', icon: Repairs, href: '/repairs' },
 ];
 
-export function AppSidebar({ onNavigate }: SidebarProps) {
-  const [activeItemId, setActiveItemId] = useState<string>('home');
+export function AppSidebar() {
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleItemClick = (itemId: string) => {
-    setActiveItemId(itemId);
-    if (onNavigate) {
-      onNavigate(itemId);
-    }
+  const handleItemClick = (href: string) => {
+    navigate(href);
+  };
+
+  const isLocationActive = (href: string) => {
+    if (href === '/' && location.pathname === '/') return true;
+    if (href !== '/' && location.pathname.startsWith(href)) return true;
+    return false;
   };
 
   return (
     <Sidebar variant="floating" className="dark">
-      <SidebarHeader className="text-primary text-3xl font-bold text-center p-4.5">
+      <SidebarHeader className="text-white text-3xl font-bold text-center p-4.5">
         TALLER DIEGO
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu className="gap-2.5 text-primary">
+          <SidebarMenu className="text-white gap-2.5">
             {items.map((item) => {
               const ItemIcon = item.icon;
               return (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
                     className="p-6 text-base"
-                    asChild
-                    isActive={activeItemId === item.id}
-                    onClick={() => handleItemClick(item.id)}
+                    isActive={isLocationActive(item.href)}
+                    onClick={() => handleItemClick(item.href)}
                   >
-                    <a href={item.href}>
-                      <ItemIcon className="size-5! mr-2" />
-                      <span>{item.label}</span>
-                    </a>
+                    <ItemIcon className="size-5! mr-2" />
+                    <span>{item.label}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );

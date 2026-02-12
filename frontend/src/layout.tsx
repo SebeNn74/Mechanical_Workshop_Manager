@@ -4,13 +4,12 @@ import { AppSidebarTrigger } from './components/app-sidebar-trigger';
 
 interface LayoutProps {
   children: React.ReactNode;
-  onNavigate: (itemId: string) => void;
 }
 
-export default function Layout({ children, onNavigate }: LayoutProps) {
+export default function Layout({ children }: LayoutProps) {
   return (
     <SidebarProvider>
-      <AppSidebar onNavigate={onNavigate} />
+      <AppSidebar />
       <main className="flex-1 w-full">
         <AppSidebarTrigger></AppSidebarTrigger>
         {children}

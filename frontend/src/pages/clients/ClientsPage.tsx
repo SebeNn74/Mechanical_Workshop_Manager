@@ -1,4 +1,10 @@
+import { columns } from './columns'
+import useAllClients from '@/modules/clients/hooks/useAllUsers';
+import { DataTable } from './DataTable';
+
 const ClientsPage = () => {
+  const { clients } = useAllClients();
+
   return (
     <div className="w-full h-full flex flex-col">
       <header className="w-full pl-17 mt-3">
@@ -6,12 +12,8 @@ const ClientsPage = () => {
           CLIENTES
         </h1>
       </header>
-      <div className="p-8">
-        <p className="text-slate-600 mb-8">Bienvenido al gestor de talleres</p>
-        {/* Aquí puedes añadir el contenido principal */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Contenido de la página */}
-        </div>
+      <div className="flex flex-col p-8">
+        <DataTable columns={columns} data={clients} route={'clients'}></DataTable>
       </div>
     </div>
   );
