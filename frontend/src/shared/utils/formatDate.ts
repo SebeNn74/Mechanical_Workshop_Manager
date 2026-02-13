@@ -1,5 +1,5 @@
 export function formatDate(dateInput: Date) {
-  const date = new Date(dateInput)
+  const date = new Date(dateInput);
 
   return date.toLocaleString('es-CO', {
     timeZone: 'America/Bogota',
@@ -10,5 +10,5 @@ export function formatDate(dateInput: Date) {
     minute: '2-digit',
     second: '2-digit',
     hour12: false, // formato 24 horas
-  })
+  });
 }

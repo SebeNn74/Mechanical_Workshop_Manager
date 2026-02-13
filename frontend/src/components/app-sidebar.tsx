@@ -27,8 +27,18 @@ const items: SidebarItem[] = [
   { id: 'home', label: 'Inicio', icon: Home, href: '/' },
   { id: 'clients', label: 'Clientes', icon: Clients, href: '/clients' },
   { id: 'vehicles', label: 'Vehículos', icon: Vehicles, href: '/vehicles' },
-  { id: 'receptions', label: 'Recepciones', icon: Receptions, href: '/receptions' },
-  { id: 'checklists', label: 'Checklists', icon: Checklists, href: '/checklists' },
+  {
+    id: 'receptions',
+    label: 'Recepciones',
+    icon: Receptions,
+    href: '/receptions',
+  },
+  {
+    id: 'checklists',
+    label: 'Checklists',
+    icon: Checklists,
+    href: '/checklists',
+  },
   { id: 'budgets', label: 'Presupuestos', icon: Budgets, href: '/budgets' },
   { id: 'repairs', label: 'Reparaciones', icon: Repairs, href: '/repairs' },
 ];

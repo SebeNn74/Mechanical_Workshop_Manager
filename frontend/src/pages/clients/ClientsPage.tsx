@@ -1,6 +1,6 @@
-import { columns } from './columns'
+import { columns, filters } from './client_consts';
 import useAllClients from '@/modules/clients/hooks/useAllUsers';
-import { DataTable } from './DataTable';
+import { DataTable } from '@/components/data-table/DataTable';
 
 const ClientsPage = () => {
   const { clients } = useAllClients();
@@ -12,8 +12,13 @@ const ClientsPage = () => {
           CLIENTES
         </h1>
       </header>
-      <div className="flex flex-col p-8">
-        <DataTable columns={columns} data={clients} route={'clients'}></DataTable>
+      <div className="flex flex-col p-8 h-full">
+        <DataTable
+          columns={columns}
+          data={clients}
+          route={'clients'}
+          filters={filters}
+        ></DataTable>
       </div>
     </div>
   );
