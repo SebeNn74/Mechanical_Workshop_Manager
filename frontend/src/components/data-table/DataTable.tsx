@@ -1,14 +1,4 @@
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
 
 import {
   Table,
@@ -21,46 +11,15 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from '../ui/button';
-import TableFilter, { Filter } from './TableFilter';
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps<TData> {
+  table: TanstackTable<TData>;
   route: string;
-  filters: Filter[];
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  route,
-  filters,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData>({ table, route }: DataTableProps<TData>) {
   const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const navigate = useNavigate();
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-    },
-    initialState: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: 15,
-      },
-    },
-  });
 
   const handleRowClick = (id: string | null) => {
     setSelectedRowId(id);
@@ -72,7 +31,6 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <TableFilter table={table} filters={filters}></TableFilter>
       <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -127,7 +85,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
                 >
                   No hay datos para mostrar.

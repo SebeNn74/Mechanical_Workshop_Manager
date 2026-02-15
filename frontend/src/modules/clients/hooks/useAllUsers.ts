@@ -1,22 +1,31 @@
-import { useState, useEffect } from 'react';
-import { getAllClients } from '../services/client.services';
+import { useState, useEffect, useCallback } from 'react';
+import { getClients } from '../services/client.services';
 
 export default function useAllClients() {
   const [clients, setClients] = useState([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const abortController = new AbortController();
-    getAllClients(abortController.signal)
-      .then((clients) => setClients(clients))
-      .catch((error) => {
-        setError(error.message);
+  const fetchClients = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data } = await getClients();
+      setClients(data);
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name !== 'CanceledError') {
+        setError(err.message ?? 'Error al cargar clientes');
         setClients([]);
-      })
-      .finally(() => setLoading(false));
-    return () => abortController.abort();
+      }
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  return { clients, loading, error };
+  useEffect(() => {
+    fetchClients();
+  }, [fetchClients]);
+
+  return { clients, loading, error, refetch: fetchClients };
 }

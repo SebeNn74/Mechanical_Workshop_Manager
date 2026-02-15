@@ -80,8 +80,9 @@ export default function TableFilter<TData>({
           value={
             filter.accessorKey === 'clean'
               ? ''
-              : ((table.getColumn(filter.accessorKey)?.getFilterValue() as string) ??
-                  '')
+              : ((table
+                  .getColumn(filter.accessorKey)
+                  ?.getFilterValue() as string) ?? '')
           }
           onChange={(event) => {
             if (filter.accessorKey === 'clean') return;

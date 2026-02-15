@@ -1,7 +1,8 @@
-const BACK_URL = import.meta.env.VITE_BACKEND_URL;
+import { api } from '@/shared/api/api';
 
-export async function getAllClients(signal: AbortSignal) {
-  const res = await fetch(`${BACK_URL}/clients`, { signal });
-  if (!res.ok) throw new Error('Error al obtener clientes');
-  return res.json();
-}
+const ROUTE = '/clients';
+
+export const getClients = async (signal?: AbortSignal) => {
+  const res = await api.get(`${ROUTE}/`, { signal });
+  return res;
+};
