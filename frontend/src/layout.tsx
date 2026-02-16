@@ -1,6 +1,6 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/app-sidebar';
-import { AppSidebarTrigger } from './components/app-sidebar-trigger';
+import { AppSidebar } from '@/components/app-sidebar/AppSidebar';
+import { AppSidebarTrigger } from '@/components/app-sidebar/AppSidebarTrigger';
 import { Toaster } from './components/ui/sonner';
 
 interface LayoutProps {

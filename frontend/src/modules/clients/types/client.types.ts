@@ -11,30 +11,31 @@ export const ClientSchema = z
     documentType: DocumentType,
     documentNumber: z
       .string()
-      .regex(/^\d+$/, '* documentNumber debe contener solo dígitos')
-      .min(6, '* documentNumber debe tener al menos 6 caracteres')
-      .max(11, '* documentNumber no debe exceder los 11 caracteres'),
+      .nonempty('El número de documento es requerido')
+      .min(6, 'Debe tener al menos 6 caracteres')
+      .max(11, 'Debe exceder los 11 caracteres')
+      .regex(/^\d+$/, 'Debe contener solo dígitos'),
+
     name: z
       .string()
-      .min(3, '* name debe tener al menos 3 caracteres')
-      .max(100, '* name no debe exceder los 30 caracteres'),
+      .nonempty('El nombre es requerido')
+      .min(3, 'Debe tener al menos 3 caracteres')
+      .max(100, 'No debe exceder los 30 caracteres'),
     phone: z
       .string()
-      .regex(/^\d{10}$/, '* phone debe contener solo dígitos')
-      .length(10, '* phone debe tener exactamente 10 dígitos'),
+      .nonempty('El número de teléfono es requerido')
+      .length(10, 'Debe tener exactamente 10 dígitos')
+      .regex(/^\d{10}$/, 'Debe contener solo dígitos'),
     email: z
       .string()
-      .regex(
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        '* email debe tener un formato válido',
-      )
-      .min(5, '* email debe tener al menos 5 caracteres')
-      .max(200, '* email no debe exceder los 200 caracteres')
+      .min(5, 'Debe tener al menos 5 caracteres')
+      .max(200, 'No debe exceder los 200 caracteres')
+      .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Debe tener un formato válido')
       .nullable(),
     address: z
       .string()
-      .min(5, '* address debe tener al menos 5 caracteres')
-      .max(200, '* address no debe exceder los 200 caracteres')
+      .min(5, 'Debe tener al menos 5 caracteres')
+      .max(200, 'No debe exceder los 200 caracteres')
       .nullable(),
     createdAt: z.date(),
   })

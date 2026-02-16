@@ -3,9 +3,11 @@ import { useDataTableLogic } from '@/hooks/useDataTableLogic';
 import useAllClients from '@/modules/clients/hooks/useAllUsers';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { DataTable } from '@/components/data-table/DataTable';
 import TableFilter from '@/components/data-table/TableFilter';
 import FetchErrorAlert from '@/components/alert/FetchErrorAlert';
+import ClientsFormDialog from './ClientsFormDialog';
 import { CirclePlus } from 'lucide-react';
 
 const ClientsPage = () => {
@@ -36,12 +38,17 @@ const ClientsPage = () => {
           CLIENTES
         </h1>
       </header>
-      <div className="flex flex-col p-8 h-full">
-        <div className="flex items-center justify-between pb-4">
+      <div className="h-full w-full flex flex-col p-8">
+        <div className="flex flex-row items-center justify-between pb-2">
           <TableFilter table={table} filters={filters} />
-          <Button>
-            <CirclePlus /> Nuevo Cliente
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="primary">
+                <CirclePlus /> Nuevo Cliente
+              </Button>
+            </DialogTrigger>
+            <ClientsFormDialog />
+          </Dialog>
         </div>
         <DataTable table={table} route={'clients'} />
       </div>
