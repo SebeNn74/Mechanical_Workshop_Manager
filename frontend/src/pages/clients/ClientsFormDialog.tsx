@@ -1,8 +1,10 @@
 import {
   CreateClientDTO,
   CreateClientInput,
+  Client,
 } from '@/modules/clients/types/client.types';
 import { useSubmitClient } from '@/modules/clients/hooks/useSubmitClient';
+import ClientsForm from '@/modules/clients/components/ClientsForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -15,11 +17,17 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Field } from '@/components/ui/field';
-import ClientsForm from './ClientsForm';
 
-const ClientsFormDialog = () => {
+interface ClientsFormDialogProps {
+  model?: 'create' | 'edit';
+  client?: Client | null;
+}
+
+const ClientsFormDialog = ({
+  model = 'create',
+  client,
+}: ClientsFormDialogProps) => {
   const { checkDuplicate, submitClient, submitting } = useSubmitClient();
-
   const form = useForm<CreateClientInput>({
     resolver: zodResolver(CreateClientDTO),
     defaultValues: {
@@ -30,6 +38,16 @@ const ClientsFormDialog = () => {
       email: null,
       address: null,
     },
+    values: client
+      ? {
+          documentType: client.documentType,
+          documentNumber: client.documentNumber,
+          name: client.name,
+          phone: client.phone,
+          email: client.email,
+          address: client.address,
+        }
+      : undefined,
     mode: 'onTouched',
     shouldUnregister: false,
   });
@@ -66,9 +84,13 @@ const ClientsFormDialog = () => {
   return (
     <DialogContent className="p-8">
       <DialogHeader>
-        <DialogTitle>Nuevo Cliente</DialogTitle>
+        <DialogTitle>
+          {model === 'edit' ? 'Editar Cliente' : 'Nuevo Cliente'}
+        </DialogTitle>
         <DialogDescription>
-          Llene el siguiente formulario para crear un nuevo cliente:
+          {model === 'edit'
+            ? 'Modifique los datos deseados del cliente:'
+            : 'Llene el siguiente formulario para crear un nuevo cliente:'}
         </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col h-full w-full py-5">
@@ -81,8 +103,17 @@ const ClientsFormDialog = () => {
           <Button type="button" variant="outline" onClick={() => form.reset()}>
             Restablecer
           </Button>
-          <Button type="submit" form="create-client-form" disabled={submitting}>
-            {submitting ? 'Guardando...' : 'Crear Cliente'}
+          <Button
+            type="submit"
+            variant="primary"
+            form="create-client-form"
+            disabled={submitting}
+          >
+            {submitting
+              ? 'Guardando...'
+              : model === 'edit'
+                ? 'Actualizar Cliente'
+                : 'Crear Cliente'}
           </Button>
         </Field>
       </DialogFooter>

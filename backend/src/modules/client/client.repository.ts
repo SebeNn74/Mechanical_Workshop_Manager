@@ -50,6 +50,7 @@ export class ClientRepository implements IClientRepository {
     async findAll(filters: ClientFilters): Promise<Client[]> {
         return await prisma.client.findMany({
             where: { ...filters },
+            orderBy: { createdAt: 'desc' },
         });
     }
 

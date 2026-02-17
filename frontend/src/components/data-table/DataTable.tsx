@@ -1,5 +1,4 @@
 import { Table as TanstackTable, flexRender } from '@tanstack/react-table';
-
 import {
   Table,
   TableBody,
@@ -8,25 +7,18 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from '../ui/button';
 
 interface DataTableProps<TData> {
   table: TanstackTable<TData>;
-  route: string;
 }
 
-export function DataTable<TData>({ table, route }: DataTableProps<TData>) {
+export function DataTable<TData>({ table }: DataTableProps<TData>) {
   const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const handleRowClick = (id: string | null) => {
     setSelectedRowId(id);
-  };
-
-  const handleRowDoubleClick = (id: string) => {
-    navigate(`/${route}/${id}`);
   };
 
   return (
@@ -68,9 +60,8 @@ export function DataTable<TData>({ table, route }: DataTableProps<TData>) {
                       ? 'bg-accent hover:bg-mf-red/50'
                       : ''
                   }`}
-                  onClick={() => handleRowClick(row.id)}
-                  onMouseOut={() => handleRowClick(null)}
-                  onDoubleClick={() => handleRowDoubleClick(row.id)}
+                  onMouseEnter={() => handleRowClick(row.id)}
+                  onMouseLeave={() => handleRowClick(null)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

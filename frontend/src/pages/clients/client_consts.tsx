@@ -1,11 +1,22 @@
-import { Filter } from '@/components/data-table/TableFilter';
-import { Button } from '@/components/ui/button';
 import { Client } from '@/modules/clients/types/client.types';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Filter } from '@/components/data-table/TableFilter';
 import { formatDate } from '@/shared/utils/formatDate';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, PencilIcon, TrashIcon } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 
-export const columns: ColumnDef<Client>[] = [
+export const getColumns = (
+  onEdit: (client: Client) => void,
+): ColumnDef<Client>[] => [
   {
     accessorKey: 'documentType',
     header: 'Tipo',
@@ -48,6 +59,34 @@ export const columns: ColumnDef<Client>[] = [
       );
     },
     cell: ({ row }) => <>{formatDate(row.getValue('createdAt'))}</>,
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      const client = row.original;
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-5 w-5 p-0">
+              <span className="sr-only">Abrir menú</span>
+              <MoreHorizontal className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => onEdit(client)}>
+              <PencilIcon />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">
+              <TrashIcon />
+              Eliminar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
 ];
 
