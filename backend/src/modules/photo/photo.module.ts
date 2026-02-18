@@ -6,4 +6,4 @@ const photoRepository = new PhotoRepository();
 const photoService = new PhotoService(photoRepository);
 const photoController = new PhotoController(photoService);
 
-export { photoRepository, photoService, photoController };
+export { photoService, photoController };

@@ -21,4 +21,4 @@ repairTaskService.setRepairService(repairService);
 
 const repairController = new RepairController(repairService);
 
-export { repairRepository, repairService, repairController };
+export { repairService, repairController };

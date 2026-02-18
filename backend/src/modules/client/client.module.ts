@@ -6,4 +6,4 @@ const clientRepository = new ClientRepository();
 const clientService = new ClientService(clientRepository);
 const clientController = new ClientController(clientService);
 
-export { clientRepository, clientService, clientController };
+export { clientService, clientController };

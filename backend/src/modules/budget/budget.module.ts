@@ -21,4 +21,4 @@ budgetItemService.setBudgetService(budgetService);
 
 const budgetController = new BudgetController(budgetService);
 
-export { budgetRepository, budgetService, budgetController };
+export { budgetService, budgetController };

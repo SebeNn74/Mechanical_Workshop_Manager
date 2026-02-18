@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // ChecklistItem Base Schemas
 //* -----------------------------
-export const ItemStatus = z.enum(['GOOD', 'REGULAR', 'BAD', 'NOT_CHECKED']);
+const ItemStatus = z.enum(['GOOD', 'REGULAR', 'BAD', 'NOT_CHECKED']);
 
 // Base
 export const ChecklistItemSchema = z

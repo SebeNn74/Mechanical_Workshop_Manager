@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Client Base Schemas
 //* -----------------------------
-export const DocumentType = z.enum(['CC', 'NIT']);
+const DocumentType = z.enum(['CC', 'NIT']);
 
 // Base
 export const ClientSchema = z

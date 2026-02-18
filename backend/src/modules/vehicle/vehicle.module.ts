@@ -7,4 +7,4 @@ const vehicleRepository = new VehicleRepository();
 const vehicleService = new VehicleService(vehicleRepository, clientService);
 const vehicleController = new VehicleController(vehicleService);
 
-export { vehicleRepository, vehicleService, vehicleController };
+export { vehicleService, vehicleController };

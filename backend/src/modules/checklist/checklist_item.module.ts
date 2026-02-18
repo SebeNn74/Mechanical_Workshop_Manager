@@ -16,4 +16,4 @@ const checklistItController = new ChecklistItController(checklistItService);
 
 photoService.setChecklistItService(checklistItService);
 
-export { checklistItRepository, checklistItService, checklistItController };
+export { checklistItService, checklistItController };

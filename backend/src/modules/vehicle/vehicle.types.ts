@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 // Vehicle Base Schemas
 //* -----------------------------
-export const PlateType = z.enum(['PRIVATE', 'PUBLIC', 'MOTORCYCLE', 'OTHER']);
+const PlateType = z.enum(['PRIVATE', 'PUBLIC', 'MOTORCYCLE', 'OTHER']);
 
 // Base
 export const VehicleSchema = z

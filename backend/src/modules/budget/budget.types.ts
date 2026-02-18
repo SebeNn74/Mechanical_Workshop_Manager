@@ -3,7 +3,7 @@ import { BudgetItemSchema } from './budget_item/budget_item.types.js';
 
 // Budget Base Schemas
 //* -----------------------------
-export const BudgetStatus = z.enum(['PENDING', 'APPROVED', 'REJECTED']);
+const BudgetStatus = z.enum(['PENDING', 'APPROVED', 'REJECTED']);
 
 // Base
 export const BudgetSchema = z

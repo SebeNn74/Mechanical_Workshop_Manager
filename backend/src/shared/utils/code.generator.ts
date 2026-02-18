@@ -1,6 +1,6 @@
 import prisma from '#/config/prisma.js';
 
-export interface CodeGeneratorConfig {
+interface CodeGeneratorConfig {
     prefix: string;
     tableName: 'reception' | 'budget' | 'repair';
     fieldName: 'receptionNumber' | 'budgetNumber' | 'repairNumber';

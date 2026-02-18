@@ -10,4 +10,4 @@ const receptionService = new ReceptionService(
 );
 const receptionController = new ReceptionController(receptionService);
 
-export { receptionRepository, receptionService, receptionController };
+export { receptionService, receptionController };
