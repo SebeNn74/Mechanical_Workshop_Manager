@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { CreateClientInput, DuplicateClientCheck } from '../types/client.types';
-import { checkDuplicateClient, postClient } from '../services/client.services';
+import { CreateClientInput, DuplicateClientCheck, UpdateClientInput } from '../types/client.types';
+import { checkDuplicateClient, postClient, patchClient } from '../services/client.services';
 
 export function useSubmitClient() {
   const [submitting, setSubmitting] = useState(false);
@@ -17,7 +17,7 @@ export function useSubmitClient() {
     }
   };
 
-  const submitClient = async (data: CreateClientInput) => {
+  const createClient = async (data: CreateClientInput) => {
     setSubmitting(true);
     try {
       await postClient(data);
@@ -32,5 +32,20 @@ export function useSubmitClient() {
     }
   };
 
-  return { checkDuplicate, submitClient, submitting };
+  const updateClient = async (id: number, data: UpdateClientInput) => {
+    setSubmitting(true);
+    try {
+      await patchClient(id, data);
+      return { success: true };
+    } catch (err) {
+      if (err instanceof Error) {
+        return { success: false, error: err.message };
+      }
+      return { success: false, error: 'Error desconocido' };
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return { checkDuplicate, createClient, updateClient, submitting };
 }

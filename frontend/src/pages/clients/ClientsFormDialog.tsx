@@ -1,13 +1,6 @@
-import {
-  CreateClientDTO,
-  CreateClientInput,
-  Client,
-} from '@/modules/clients/types/client.types';
-import { useSubmitClient } from '@/modules/clients/hooks/useSubmitClient';
+import { Client } from '@/modules/clients/types/client.types';
 import ClientsForm from '@/modules/clients/components/ClientsForm';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { useClientForm } from '@/modules/clients/hooks/useClientForm';
 import { Button } from '@/components/ui/button';
 import {
   DialogContent,
@@ -18,86 +11,41 @@ import {
 } from '@/components/ui/dialog';
 import { Field } from '@/components/ui/field';
 
-interface ClientsFormDialogProps {
-  model?: 'create' | 'edit';
-  client?: Client | null;
+interface ClientDialogShellProps {
+  title: string;
+  description: string;
+  submitLabel: string;
+  form: ReturnType<typeof useClientForm>['form'];
+  submitting: boolean;
+  disableWhenPristine?: boolean;
+  onSubmit: (data: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-const ClientsFormDialog = ({
-  model = 'create',
-  client,
-}: ClientsFormDialogProps) => {
-  const { checkDuplicate, submitClient, submitting } = useSubmitClient();
-  const form = useForm<CreateClientInput>({
-    resolver: zodResolver(CreateClientDTO),
-    defaultValues: {
-      documentType: 'CC',
-      documentNumber: '',
-      name: '',
-      phone: '',
-      email: null,
-      address: null,
-    },
-    values: client
-      ? {
-          documentType: client.documentType,
-          documentNumber: client.documentNumber,
-          name: client.name,
-          phone: client.phone,
-          email: client.email,
-          address: client.address,
-        }
-      : undefined,
-    mode: 'onTouched',
-    shouldUnregister: false,
-  });
-
-  const onSubmit = async (data: CreateClientInput) => {
-    const duplicateCheck = await checkDuplicate({
-      documentNumber: data.documentNumber,
-      documentType: data.documentType,
-    });
-
-    if (!duplicateCheck.success) {
-      toast.error(duplicateCheck.error || 'Error al verificar duplicados', {
-        position: 'top-center',
-      });
-      return;
-    }
-
-    if (duplicateCheck.exists) {
-      toast.error('Ya existe un cliente con ese número y tipo de documento', {
-        position: 'top-center',
-      });
-      return;
-    }
-
-    const result = await submitClient(data);
-    if (result.success) {
-      toast.success('Cliente creado con éxito', { position: 'top-center' });
-      form.reset();
-    } else {
-      toast.error(result.error, { position: 'top-center' });
-    }
-  };
+const ClientDialogShell = ({
+  title,
+  description,
+  submitLabel,
+  form,
+  submitting,
+  disableWhenPristine = false,
+  onSubmit,
+}: ClientDialogShellProps) => {
+  const isSubmitDisabled =
+    submitting || (disableWhenPristine && !form.formState.isDirty);
 
   return (
     <DialogContent className="p-8">
       <DialogHeader>
-        <DialogTitle>
-          {model === 'edit' ? 'Editar Cliente' : 'Nuevo Cliente'}
-        </DialogTitle>
-        <DialogDescription>
-          {model === 'edit'
-            ? 'Modifique los datos deseados del cliente:'
-            : 'Llene el siguiente formulario para crear un nuevo cliente:'}
-        </DialogDescription>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
+
       <div className="flex flex-col h-full w-full py-5">
-        <form id="create-client-form" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="client-form" onSubmit={form.handleSubmit(onSubmit)}>
           <ClientsForm form={form} />
         </form>
       </div>
+
       <DialogFooter>
         <Field className="justify-center" orientation="horizontal">
           <Button type="button" variant="outline" onClick={() => form.reset()}>
@@ -106,14 +54,10 @@ const ClientsFormDialog = ({
           <Button
             type="submit"
             variant="primary"
-            form="create-client-form"
-            disabled={submitting}
+            form="client-form"
+            disabled={isSubmitDisabled}
           >
-            {submitting
-              ? 'Guardando...'
-              : model === 'edit'
-                ? 'Actualizar Cliente'
-                : 'Crear Cliente'}
+            {submitting ? 'Guardando...' : submitLabel}
           </Button>
         </Field>
       </DialogFooter>
@@ -121,4 +65,37 @@ const ClientsFormDialog = ({
   );
 };
 
-export default ClientsFormDialog;
+export const CreateClientDialog = () => {
+  const { form, submitting, onCreateSubmit } = useClientForm();
+
+  return (
+    <ClientDialogShell
+      title="Nuevo Cliente"
+      description="Llene el siguiente formulario para crear un nuevo cliente:"
+      submitLabel="Crear Cliente"
+      form={form}
+      submitting={submitting}
+      onSubmit={onCreateSubmit}
+    />
+  );
+};
+
+interface EditClientDialogProps {
+  client: Client;
+}
+
+export const EditClientDialog = ({ client }: EditClientDialogProps) => {
+  const { form, submitting, onUpdateSubmit } = useClientForm(client);
+
+  return (
+    <ClientDialogShell
+      title="Editar Cliente"
+      description="Modifique los datos deseados del cliente:"
+      submitLabel="Actualizar Cliente"
+      form={form}
+      submitting={submitting}
+      disableWhenPristine
+      onSubmit={onUpdateSubmit}
+    />
+  );
+};

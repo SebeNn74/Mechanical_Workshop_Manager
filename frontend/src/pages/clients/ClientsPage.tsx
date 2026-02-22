@@ -1,28 +1,22 @@
-import { useDataTableLogic } from '@/hooks/useDataTableLogic';
+import { useState } from 'react';
 import { Client } from '@/modules/clients/types/client.types';
 import useAllClients from '@/modules/clients/hooks/useAllUsers';
+import { useDataTableLogic } from '@/hooks/useDataTableLogic';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { DataTable } from '@/components/data-table/DataTable';
 import TableFilter from '@/components/data-table/TableFilter';
 import FetchErrorAlert from '@/components/alert/FetchErrorAlert';
-import { filters } from './client_consts';
-import ClientsFormDialog from './ClientsFormDialog';
-import { getColumns } from './client_consts';
+import { filters, getColumns } from './client_consts';
+import { CreateClientDialog, EditClientDialog } from './ClientsFormDialog';
 import { CirclePlus } from 'lucide-react';
-import { useState } from 'react';
 
 const ClientsPage = () => {
   const { clients, loading, error, refetch } = useAllClients();
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
 
-  const columns = getColumns((client) => {
-    setEditingClient(client);
-    setIsEditDialogOpen(true);
-  });
-
+  const columns = getColumns(setEditingClient);
   const { table } = useDataTableLogic(clients, columns);
 
   if (loading)
@@ -58,13 +52,16 @@ const ClientsPage = () => {
                 <CirclePlus /> Nuevo Cliente
               </Button>
             </DialogTrigger>
-            <ClientsFormDialog model="create" />
+            <CreateClientDialog />
           </Dialog>
         </div>
         <DataTable table={table} />
 
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <ClientsFormDialog model="edit" client={editingClient} />
+        <Dialog
+          open={!!editingClient}
+          onOpenChange={(open) => !open && setEditingClient(null)}
+        >
+          {editingClient && <EditClientDialog client={editingClient} />}
         </Dialog>
       </div>
     </div>

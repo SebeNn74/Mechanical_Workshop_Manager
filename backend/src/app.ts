@@ -14,7 +14,7 @@ const allowedOrigins = [FRONTEND_URL];
 
 const options: cors.CorsOptions = {
     origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
 };
 
 const app = express();

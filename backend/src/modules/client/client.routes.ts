@@ -34,7 +34,7 @@ clientRouter.get(
     clientController.getById,
 );
 
-clientRouter.put(
+clientRouter.patch(
     '/:id',
     validateDTO(ParamIdDTO, 'params'),
     validateDTO(UpdateClientDTO),
